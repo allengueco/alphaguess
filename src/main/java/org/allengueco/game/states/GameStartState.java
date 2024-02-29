@@ -30,7 +30,5 @@ public class GameStartState implements State {
         context.setDictionary(dict);
         context.setGuess("");
         context.setGuesses(guesses);
-
-        context.setState(w);
     }
 }

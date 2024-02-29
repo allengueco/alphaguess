@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GameService {
-    MutableMap<Long, GameContext> games;
+    MutableMap<String, GameContext> games;
 
     public GameService() {
         this.games = Maps.mutable.empty();
     }
 
-    public GameContext getGame(Long id) {
+    public GameContext getGame(String id) {
         return games.get(id);
     }
 
-    public GameContext removeGame(Long id) {
+    public GameContext removeGame(String id) {
         return games.remove(id);
     }
 }
