@@ -11,6 +11,7 @@ public class GameContext {
     private Dictionary dictionary;
     private Guesses guesses;
     private Instant start;
+
     private State currentState;
 
     public GameContext() {
@@ -72,12 +73,10 @@ public class GameContext {
         this.currentState = state;
     }
 
-    public void doAction(String guess) {
-        this.guess = guess;
+    public GameContext doAction(String guess) {
+        this.setGuess(guess);
         currentState.doAction(this);
-    }
 
-    public void submitGuess() {
-        this.guesses.addGuess(this.answer, this.guess);
+        return this;
     }
 }

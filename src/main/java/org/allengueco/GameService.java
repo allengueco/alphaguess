@@ -14,8 +14,8 @@ public class GameService {
         this.games = Maps.mutable.empty();
     }
 
-    public void addGame(String id) {
-        this.games.add(Tuples.pair(id, new GameContext()));
+    public void addGame(String id, GameContext context) {
+        this.games.add(Tuples.pair(id, context));
     }
 
     public GameContext getGame(String id) {

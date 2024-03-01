@@ -38,7 +38,7 @@ public class Guesses {
             throw new IllegalStateException("Guess must not equal Answer at this point: guess=%s, answer=%s".formatted(guess, answer));
         }
 
-        Set<String> half = result < 0 ? after : before;
+        Set<String> half = result > 0 ? after : before;
         return half.add(guess);
     }
 
@@ -48,5 +48,9 @@ public class Guesses {
 
     public Collection<String> getAfterGuesses() {
         return this.after;
+    }
+
+    public Comparator<String> comparator() {
+        return this.comparator;
     }
 }
