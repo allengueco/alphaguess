@@ -11,23 +11,7 @@ public class GameContext {
     private Dictionary dictionary;
     private Guesses guesses;
     private Instant start;
-
     private State currentState;
-
-    public GameContext() {
-    }
-
-    public GameContext(String answer,
-                       String guess,
-                       Dictionary dictionary,
-                       Guesses guesses,
-                       Instant start) {
-        this.answer = answer;
-        this.guess = guess;
-        this.dictionary = dictionary;
-        this.guesses = guesses;
-        this.start = start;
-    }
 
     public static GameContext empty() {
         return new GameContext();
@@ -65,6 +49,10 @@ public class GameContext {
         this.guesses = guesses;
     }
 
+    public Instant getStart() {
+        return start;
+    }
+
     public void setStart(Instant start) {
         this.start = start;
     }
@@ -73,10 +61,8 @@ public class GameContext {
         this.currentState = state;
     }
 
-    public GameContext doAction(String guess) {
+    public ActionResult doAction(String guess) {
         this.setGuess(guess);
-        currentState.doAction(this);
-
-        return this;
+        return currentState.doAction(this);
     }
 }

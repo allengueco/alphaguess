@@ -5,8 +5,13 @@ import org.slf4j.LoggerFactory;
 
 public class GameCompleteState implements State {
     private final Logger LOG = LoggerFactory.getLogger(GameCompleteState.class);
+
     @Override
-    public void doAction(GameContext context) {
-        LOG.info("GAME COMPLETE");
+    public ActionResult doAction(GameContext context) {
+        LOG.info(context.getGuess());
+        ActionResult result = new ActionResult();
+        result.setGameOver(true);
+        result.setGuesses(context.getGuesses());
+        return result;
     }
 }

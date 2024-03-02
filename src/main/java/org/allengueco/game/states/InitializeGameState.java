@@ -2,6 +2,7 @@ package org.allengueco.game.states;
 
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.Guesses;
+import org.allengueco.game.WordSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,12 +12,17 @@ public class InitializeGameState implements State {
     private final Logger LOG = LoggerFactory.getLogger(InitializeGameState.class);
     Dictionary dictionary;
 
-    public InitializeGameState(Dictionary dict) {
+    WordSelector wordSelector;
+
+    public InitializeGameState(Dictionary dict, WordSelector wordSelector) {
         this.dictionary = dict;
+        this.wordSelector = wordSelector;
     }
+
     @Override
-    public void doAction(GameContext context) {
-        String selectedWord = dictionary.randomWord();
+    public ActionResult doAction(GameContext context) {
+        ActionResult res = ActionResult.defaultResult();
+        String selectedWord = wordSelector.randomWord();
         LOG.info("selected answer: {}", selectedWord);
 
         context.setAnswer(selectedWord);
@@ -27,5 +33,6 @@ public class InitializeGameState implements State {
         LOG.info("INITIALIZED");
 
         context.setState(new SubmitGuessState());
+        return res;
     }
 }

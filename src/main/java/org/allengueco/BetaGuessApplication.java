@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AlphaGuessApplication {
+public class BetaGuessApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AlphaGuessApplication.class, args);
+        SpringApplication.run(BetaGuessApplication.class, args);
     }
 }

@@ -4,10 +4,13 @@ import org.allengueco.game.states.GameContext;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.tuple.Tuples;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GameService {
+    private final Logger LOG = LoggerFactory.getLogger(GameService.class);
     MutableMap<String, GameContext> games;
 
     public GameService() {

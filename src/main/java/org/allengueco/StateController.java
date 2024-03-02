@@ -1,15 +1,13 @@
 package org.allengueco;
 
-import org.allengueco.dto.SubmissionSummary;
 import org.allengueco.game.Dictionary;
+import org.allengueco.game.WordSelector;
+import org.allengueco.game.states.ActionResult;
 import org.allengueco.game.states.GameContext;
 import org.allengueco.game.states.InitializeGameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.session.MapSession;
-import org.springframework.session.ReactiveMapSessionRepository;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,39 +20,40 @@ public class StateController {
 
     @Autowired
     private GameService gameService;
+
     @Autowired
     private Dictionary dictionary;
 
     @Autowired
-    private ReactiveMapSessionRepository sessionRepository;
-
-    @GetMapping("/create")
-    public Mono<String> createGame(WebSession session) {
-        LOG.info("id: {}", session.getId());
-
-        return Mono.just("CREATED: " + session.getId());
-    }
-
+    private WordSelector wordSelector;
 
     @GetMapping("/submit")
-    public Mono<String> submitGuess(WebSession session, @RequestParam String guess) {
+    public Mono<ActionResult> submitGuess(WebSession session, @RequestParam String guess) {
         GameContext context = gameService.getGame(session.getId());
         if (context == null) {
             context = GameContext.empty();
-            context.setState(new InitializeGameState(this.dictionary));
+            context.setState(new InitializeGameState(dictionary, wordSelector));
 
             context.doAction(guess); // initializes context
             gameService.addGame(session.getId(), context);
+            session.getAttributes().put("gameId", session.getId());
         }
-        session.start();
-        context.doAction(guess);
 
-        return Mono.just("submitted");
+        String gameId = session.getAttribute("gameId");
+
+        return updateFromResult(context.doAction(guess), gameId);
     }
 
-    @GetMapping("/session-details")
-    public Mono<String> getGameSession(WebSession session) {
-        return sessionRepository.findById(session.getId())
-                .map(MapSession::getId);
+    /**
+     * @param result
+     * @return
+     */
+    private Mono<ActionResult> updateFromResult(ActionResult result, String gameId) {
+        return Mono.just(result)
+                .doOnNext(res -> {
+                    if (res.isGameOver()) gameService.removeGame(gameId);
+                });
     }
+
+
 }
