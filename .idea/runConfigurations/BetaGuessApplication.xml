@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BetaGuessApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+    <module name="backend" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.allengueco.BetaGuessApplication" />
+    <method v="2" />
+  </configuration>
+</component>
