@@ -1,6 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable, shareReplay} from "rxjs";
+import {Observable, share, shareReplay, tap} from "rxjs";
 import {SubmitResult} from "./model/SubmitResult.model";
 
 @Injectable({
@@ -12,6 +12,14 @@ export class BetaGuessService {
   submit(guess: string): Observable<SubmitResult> {
     console.log(`submitting ${guess}`);
 
-    return this.http.post<SubmitResult>(`/api/submit`, guess).pipe(shareReplay(1))
+    return this.http.post<SubmitResult>(`/api/submit`, {guess: guess}).pipe(
+      tap(console.log)
+    )
+  }
+
+  currentSession(): Observable<SubmitResult> {
+    return this.http.get<SubmitResult>(`/api/current-session`).pipe(
+      tap(console.log)
+    )
   }
 }

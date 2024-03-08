@@ -16,7 +16,7 @@ export class AppComponent {
   betaGuessService = inject(BetaGuessService);
   title = 'betaguess';
 
-  submitResult: Observable<SubmitResult> = of()
+  submitResult: Observable<SubmitResult> = this.betaGuessService.currentSession();
 
   errorValidator: AsyncValidatorFn = (form) => {
     return this.submitResult.pipe(
@@ -36,7 +36,7 @@ export class AppComponent {
 
   onSubmit() {
     const guess = this.form.controls.guess.value
-
     this.submitResult = this.betaGuessService.submit(guess);
+    this.form.reset();
   }
 }

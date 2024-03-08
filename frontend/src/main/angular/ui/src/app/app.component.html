@@ -1,15 +1,10 @@
 <div class="h-screen w-screen flex flex-col items-center">
   <h1 class="text-black font-medium text-3xl pt-48 pb-20">{{ title }}</h1>
   <div class="pb-5">
+    {{ submitResult | async | json }}
     <h1 class="text-lg">Words Before:</h1>
-    <!--    {{ submitResult | async | json }}-->
-    <ul>
-      @for (word of (submitResult | async)?.beforeGuesses; track $index) {
-        <li>{{ word | lowercase }}</li>
-      }
-    </ul>
   </div>
-  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+  <form class="flex flex-col" (ngSubmit)="onSubmit()" [formGroup]="form">
     <input
       class="shadow
       appearance-none
@@ -21,14 +16,12 @@
       focus:shadow-outline"
       formControlName="guess"
       id="username">
-    @if (form.errors?.['submitError']) {
-      <p>{{ form.errors?.['submitError'] }}</p>
-    }
     <button
       [disabled]="form.errors"
       class="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">
       Guess
     </button>
+    {{ form.errors | json }}
   </form>
   <div class="pt-5">
     <h2 class="text-lg">Words After:</h2>
