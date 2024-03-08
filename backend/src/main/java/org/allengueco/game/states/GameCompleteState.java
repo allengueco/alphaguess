@@ -9,10 +9,8 @@ public class GameCompleteState implements State {
 
     @Override
     public ActionResult doAction(GameContext context) {
-        LOG.info(context.getGuess());
-        ActionResult result = new ActionResult();
+        ActionResult result = ActionResult.defaultResult(context);
         result.setGameOver(true);
-        result.setGuesses(context.getGuesses());
         return result;
     }
 }

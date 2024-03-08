@@ -3,6 +3,7 @@
   <div class="pb-5">
     {{ submitResult | async | json }}
     <h1 class="text-lg">Words Before:</h1>
+    {{ (submitResult | async)?.beforeGuesses | json}}
   </div>
   <form class="flex flex-col" (ngSubmit)="onSubmit()" [formGroup]="form">
     <input

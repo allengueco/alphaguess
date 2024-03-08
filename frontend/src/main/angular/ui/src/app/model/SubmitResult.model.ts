@@ -3,6 +3,5 @@ export type SubmitResult = {
   beforeGuesses: string[]
   afterGuesses: string[]
   isGameOver: boolean,
-  isSessionExpired: boolean,
-  submissionTimestamp: string
+  lastSubmissionTimestamp: string
 }

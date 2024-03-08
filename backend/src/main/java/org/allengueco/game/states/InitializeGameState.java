@@ -22,7 +22,7 @@ public class InitializeGameState implements State {
 
     @Override
     public ActionResult doAction(GameContext context) {
-        ActionResult res = ActionResult.defaultResult();
+        ActionResult res = ActionResult.defaultResult(context);
         String selectedWord = wordSelector.randomWord();
         LOG.info("selected answer: {}", selectedWord);
 

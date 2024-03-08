@@ -1,6 +1,7 @@
 package org.allengueco;
 
 import org.allengueco.dto.ActionResult;
+import org.allengueco.dto.SubmitRequest;
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.WordSelector;
 import org.allengueco.game.states.GameContext;
@@ -34,27 +35,22 @@ public class StateController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Mono<ActionResult> submitGuess(WebSession session, @RequestBody SubmitRequest request) {
+    public Mono<ActionResult> submitGuess(
+            WebSession session,
+            @RequestBody(required = false) SubmitRequest request) {
+        String guess = request == null ? null : request.guess();
         GameContext context = gameService.getGame(session.getId());
         if (context == null) {
             context = GameContext.empty();
             context.setState(new InitializeGameState(dictionary, wordSelector));
 
-            context.doAction(request.guess()); // initializes context
+            context.doAction(guess); // initializes context
             gameService.addGame(session.getId(), context);
+
+            // the session is started here.
             session.getAttributes().put("gameId", session.getId());
         }
 
-        return Mono.just(context.doAction(request.guess()));
-    }
-
-    private Mono<ActionResult> updateFromResult(ActionResult result, String gameId) {
-        return Mono.just(result)
-                .doOnNext(res -> {
-                    if (res.isGameOver()) gameService.removeGame(gameId);
-                });
-    }
-
-    private record SubmitRequest(String guess) {
+        return Mono.just(context.doAction(guess));
     }
 }

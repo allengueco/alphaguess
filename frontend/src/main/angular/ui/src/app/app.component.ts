@@ -4,7 +4,7 @@ import {RouterOutlet} from '@angular/router';
 import {BetaGuessService} from "./beta-guess.service";
 import {AsyncValidatorFn, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {SubmitResult} from "./model/SubmitResult.model";
-import {map, Observable, of} from 'rxjs';
+import {map, Observable} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -16,9 +16,9 @@ export class AppComponent {
   betaGuessService = inject(BetaGuessService);
   title = 'betaguess';
 
-  submitResult: Observable<SubmitResult> = this.betaGuessService.currentSession();
+  submitResult: Observable<SubmitResult> = this.betaGuessService.submit("");
 
-  errorValidator: AsyncValidatorFn = (form) => {
+  errorValidator: AsyncValidatorFn = (_form) => {
     return this.submitResult.pipe(
       map(r => ({
         submitError: r.error
@@ -30,7 +30,7 @@ export class AppComponent {
       guess: new FormControl("", {
         nonNullable: true,
         validators: [Validators.required],
-        asyncValidators: this.errorValidator
+        // asyncValidators: this.errorValidator
       })
     });
 

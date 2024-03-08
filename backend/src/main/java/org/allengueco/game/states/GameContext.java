@@ -12,6 +12,7 @@ public class GameContext {
     private Dictionary dictionary;
     private Guesses guesses;
     private Instant start;
+    private Instant lastSubmissionTimestamp;
     private State currentState;
 
     public static GameContext empty() {
@@ -65,5 +66,13 @@ public class GameContext {
     public ActionResult doAction(String guess) {
         this.setGuess(guess);
         return currentState.doAction(this);
+    }
+
+    public Instant getLastSubmissionTimestamp() {
+        return lastSubmissionTimestamp;
+    }
+
+    public void setLastSubmissionTimestamp(Instant lastSubmissionTimestamp) {
+        this.lastSubmissionTimestamp = lastSubmissionTimestamp;
     }
 }

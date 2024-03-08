@@ -13,32 +13,40 @@ public class SubmitGuessState implements State {
 
     @Override
     public ActionResult doAction(GameContext context) {
-        ActionResult res = ActionResult.defaultResult();
+        ActionResult res = ActionResult.defaultResult(context);
         Instant now = Instant.now();
-        res.setSubmissionTimestamp(now);
         String answer = context.getAnswer();
         String guess = context.getGuess();
+
+        if (guess == null || guess.isEmpty() || guess.isBlank()) {
+            LOG.info("[guess] is empty. Returning res");
+            return res;
+        }
+
         LOG.info("GUESSING: {}", context.getGuess());
         Comparator<String> comparator = context.getGuesses().comparator();
 
         if (comparator.compare(answer, guess) == 0) {
             res.setGameOver(true);
-            res.setSubmissionTimestamp(now);
+            res.setLastSubmissionTimestamp(now);
+            context.setLastSubmissionTimestamp(now);
             context.setState(new GameCompleteState());
         } else {
             if (context.getDictionary().contains(guess)) {
                 boolean added = context.getGuesses().addGuess(context.getAnswer(), context.getGuess());
                 if (!added) {
-                    LOG.error("Already guessed: {}", guess);
+                    LOG.warn("Already guessed: {}", guess);
                     res.setError(SubmitError.ALREADY_GUESSED);
                 }
+                context.setLastSubmissionTimestamp(now);
+                res.setLastSubmissionTimestamp(now);
 
             } else {
                 LOG.error("Guessed an invalid word: {}", guess);
                 res.setError(SubmitError.INVALID_WORD);
             }
         }
-        res.setGuesses(context.getGuesses());
+//        res.setGuesses(context.getGuesses());
         LOG.info("{}", context.getGuesses());
         return res;
     }

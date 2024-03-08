@@ -1,25 +1,26 @@
 package org.allengueco.dto;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import org.allengueco.game.Guesses;
 import org.allengueco.game.SubmitError;
+import org.allengueco.game.states.GameContext;
 
 import java.time.Instant;
 
 public class ActionResult {
     SubmitError error;
+    @JsonUnwrapped
     Guesses guesses;
     boolean isGameOver;
-    boolean isSessionExpired;
-    Instant submissionTimestamp;
+    Instant lastSubmissionTimestamp;
 
     public ActionResult() {
     }
 
-    public static ActionResult defaultResult() {
+    public static ActionResult defaultResult(GameContext context) {
         ActionResult res = new ActionResult();
-        res.setGuesses(Guesses.newGuesses());
-        res.setSessionExpired(false);
-        res.setSubmissionTimestamp(Instant.MIN);
+        res.setGuesses(context.getGuesses());
+        res.setLastSubmissionTimestamp(context.getLastSubmissionTimestamp());
         res.setGameOver(false);
         return res;
     }
@@ -48,19 +49,11 @@ public class ActionResult {
         isGameOver = gameOver;
     }
 
-    public boolean isSessionExpired() {
-        return isSessionExpired;
+    public Instant getLastSubmissionTimestamp() {
+        return lastSubmissionTimestamp;
     }
 
-    public void setSessionExpired(boolean sessionExpired) {
-        isSessionExpired = sessionExpired;
-    }
-
-    public Instant getSubmissionTimestamp() {
-        return submissionTimestamp;
-    }
-
-    public void setSubmissionTimestamp(Instant submissionTimestamp) {
-        this.submissionTimestamp = submissionTimestamp;
+    public void setLastSubmissionTimestamp(Instant lastSubmissionTimestamp) {
+        this.lastSubmissionTimestamp = lastSubmissionTimestamp;
     }
 }

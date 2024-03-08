@@ -1,5 +1,6 @@
 package org.allengueco.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 
 import java.util.Collection;
@@ -7,6 +8,7 @@ import java.util.Comparator;
 import java.util.Set;
 
 public class Guesses {
+    @JsonIgnore
     public final Comparator<String> comparator = String.CASE_INSENSITIVE_ORDER;
 
     private final Set<String> before = TreeSortedSet.newSet(comparator);
