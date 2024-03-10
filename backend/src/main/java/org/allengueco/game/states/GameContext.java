@@ -1,5 +1,6 @@
 package org.allengueco.game.states;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.allengueco.dto.ActionResult;
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.Guesses;
@@ -9,10 +10,12 @@ import java.time.Instant;
 public class GameContext {
     private String answer;
     private String guess;
+    @JsonIgnore
     private Dictionary dictionary;
     private Guesses guesses;
     private Instant start;
     private Instant lastSubmissionTimestamp;
+    @JsonIgnore
     private State currentState;
 
     public static GameContext empty() {

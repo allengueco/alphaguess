@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.Matchers.containsInRelativeOrder;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,8 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = StateController.class)
 class StateControllerTest {
     private final Logger log = LoggerFactory.getLogger(StateControllerTest.class);
-    @Autowired
-    GameService gameService;
     @MockBean
     Dictionary dictionary;
     @MockBean
@@ -41,9 +40,7 @@ class StateControllerTest {
     @Test
     void submitTwiceValid() throws Exception {
         when(wordSelector.randomWord()).thenReturn("case");
-        when(dictionary.contains("one")).thenReturn(true);
-        when(dictionary.contains("two")).thenReturn(true);
-        when(dictionary.contains("tyrant")).thenReturn(true);
+        when(dictionary.contains(anyString())).thenReturn(true);
 
         var first = testRequest(new SubmitRequest("one"), null)
                 .andExpect(status().isOk())
@@ -66,7 +63,7 @@ class StateControllerTest {
     @Test
     void submitOnceValid() throws Exception {
         when(wordSelector.randomWord()).thenReturn("case");
-        when(dictionary.contains("apple")).thenReturn(true);
+        when(dictionary.contains(anyString())).thenReturn(true);
 
         testRequest(new SubmitRequest("apple"), null)
                 .andExpect(status().isOk())
@@ -90,10 +87,6 @@ class StateControllerTest {
     @TestConfiguration
     @EnableSpringHttpSession
     static class StateControllerConfiguration {
-        @Bean
-        GameService gameService() {
-            return new GameService();
-        }
 
         @Bean
         MapSessionRepository sessionRepository() {

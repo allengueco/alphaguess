@@ -17,13 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Iterator;
+
 @RestController
 @RequestMapping("/api")
 public class StateController {
     private final static Logger LOG = LoggerFactory.getLogger(StateController.class);
-
-    @Autowired
-    private GameService gameService;
 
     @Autowired
     private Dictionary dictionary;
@@ -38,18 +37,23 @@ public class StateController {
     public ResponseEntity<ActionResult> submitGuess(
             HttpSession session,
             @RequestBody(required = false) SubmitRequest request) {
-        String guess = request == null ? null : request.guess();
-        GameContext context = gameService.getGame(session.getId());
-        if (context == null) {
-            context = GameContext.empty();
-            context.setState(new InitializeGameState(dictionary, wordSelector));
-
-            context.doAction(guess); // initializes context
-            gameService.addGame(session.getId(), context);
-
-            // the session is started here.
-            session.setAttribute("gameId", session.getId());
+        LOG.info("id: {}", session.getId());
+        for (Iterator<String> it = session.getAttributeNames().asIterator(); it.hasNext(); ) {
+            var e = it.next();
+            LOG.info("attr: {}", e);
         }
+        String guess = request == null ? null : request.guess();
+        if (session.isNew()) {
+            LOG.info("Initializing new session with id: {}...", session.getId());
+            GameContext newContext = GameContext.empty();
+            newContext.setState(new InitializeGameState(dictionary, wordSelector));
+
+            newContext.doAction(guess); // initializes context
+
+            session.setAttribute("context", newContext);
+        }
+
+        GameContext context = (GameContext) session.getAttribute("context");
 
         return ResponseEntity.ok(context.doAction(guess));
     }
