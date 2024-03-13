@@ -37,11 +37,6 @@ public class StateController {
     public ResponseEntity<ActionResult> submitGuess(
             HttpSession session,
             @RequestBody(required = false) SubmitRequest request) {
-        LOG.info("id: {}", session.getId());
-        for (Iterator<String> it = session.getAttributeNames().asIterator(); it.hasNext(); ) {
-            var e = it.next();
-            LOG.info("attr: {}", e);
-        }
         String guess = request == null ? null : request.guess();
         if (session.isNew()) {
             LOG.info("Initializing new session with id: {}...", session.getId());

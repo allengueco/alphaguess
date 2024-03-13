@@ -1,6 +1,7 @@
 package org.allengueco.game.states;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.allengueco.dto.ActionResult;
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.Guesses;
