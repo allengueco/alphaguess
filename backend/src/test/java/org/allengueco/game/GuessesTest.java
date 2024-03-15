@@ -54,11 +54,11 @@ class GuessesTest {
         final String GUESS1 = "BLACK";
         final String GUESS2 = "blacK";
 
-        boolean g1 = guesses.addGuess(ANSWER, GUESS1);
-        boolean g2 = guesses.addGuess(ANSWER, GUESS2);
+        Guesses.Result g1 = guesses.addGuess(ANSWER, GUESS1);
+        Guesses.Result g2 = guesses.addGuess(ANSWER, GUESS2);
 
-        assertTrue(g1);
-        assertFalse(g2);
+        assertEquals(Guesses.Result.ADDED, g1);
+        assertEquals(Guesses.Result.ALREADY_GUESSED, g2);
 
         assertTrue(guesses.getBeforeGuesses().isEmpty());
         assertFalse(guesses.getAfterGuesses().isEmpty());

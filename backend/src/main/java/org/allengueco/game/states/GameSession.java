@@ -1,13 +1,16 @@
 package org.allengueco.game.states;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.StdKeyDeserializers;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import org.allengueco.dto.ActionResult;
 import org.allengueco.game.Guesses;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Transient;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
+import org.springframework.data.annotation.*;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.convert.RedisConverter;
 
 import java.time.Instant;
 
@@ -15,16 +18,15 @@ import java.time.Instant;
 public class GameSession {
     @Id
     String id;
+    State state;
     private String answer;
     private String guess;
+
     private Guesses guesses;
     @CreatedDate
     private Instant start;
     @LastModifiedDate
     private Instant lastSubmissionTimestamp;
-    @JsonIgnore
-    @Transient
-    private State currentState;
 
     private GameSession(String id) {
         this.id = id;
@@ -32,6 +34,14 @@ public class GameSession {
 
     public static GameSession withId(String id) {
         return new GameSession(id);
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public String getAnswer() {
@@ -66,20 +76,15 @@ public class GameSession {
         this.start = start;
     }
 
-    public void setState(State state) {
-        this.currentState = state;
-    }
-
-    public ActionResult updateSession(String guess) {
-        this.setGuess(guess);
-        return currentState.doAction(this);
-    }
-
     public Instant getLastSubmissionTimestamp() {
         return lastSubmissionTimestamp;
     }
 
     public void setLastSubmissionTimestamp(Instant lastSubmissionTimestamp) {
         this.lastSubmissionTimestamp = lastSubmissionTimestamp;
+    }
+
+    public enum State {
+        Initialize, Submit, Complete
     }
 }

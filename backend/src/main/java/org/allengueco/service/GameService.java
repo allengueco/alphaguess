@@ -5,6 +5,7 @@ import org.allengueco.game.Dictionary;
 import org.allengueco.game.SubmitError;
 import org.allengueco.game.WordSelector;
 import org.allengueco.game.states.GameSession;
+import org.allengueco.game.states.GameStateHandler;
 import org.allengueco.game.states.InitializeGameState;
 import org.allengueco.repository.GameRepository;
 import org.slf4j.Logger;
@@ -26,6 +27,9 @@ public class GameService {
     @Autowired
     WordSelector wordSelector;
 
+    @Autowired
+    GameStateHandler stateHandler;
+
     private static ActionResult decorateWithError(ActionResult r, SubmitError error) {
         r.setError(error);
         return r;
@@ -46,15 +50,15 @@ public class GameService {
             Optional<GameSession> retrievedOrDefault = session.or(() -> newGameSession(id));
             if (retrievedOrDefault.isPresent()) {
                 var s = retrievedOrDefault.get();
-                ActionResult res = s.updateSession(guess);
+                s.setGuess(guess);
+                ActionResult res = stateHandler.handle(s);
                 gameRepository.save(s);
-
                 return Optional.of(res);
             } else {
                 return Optional.empty();
             }
         } else {
-            return session.map(s -> s.updateSession(null))
+            return session.map(s -> stateHandler.handle(s))
                     .map(r -> decorateWithError(r, SubmitError.INVALID_WORD));
         }
     }
@@ -62,8 +66,8 @@ public class GameService {
     Optional<GameSession> newGameSession(String id) {
         log.info("Creating new session with id {}", id);
         GameSession newSession = GameSession.withId(id);
-        newSession.setState(new InitializeGameState(wordSelector));
-        newSession.updateSession(null); // no need to pass in a guess, this is to initialize session
+        newSession.setState(GameSession.State.Initialize);
+        stateHandler.handle(newSession); // no need to pass in a guess, this is to initialize session
 
         return Optional.of(newSession);
     }

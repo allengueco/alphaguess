@@ -1,12 +1,21 @@
 package org.allengueco.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.MapDeserializer;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.fasterxml.jackson.databind.ser.std.MapSerializer;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
-
+@JsonSerialize(keyAs = String.class, contentAs = List.class)
+@JsonDeserialize(keyAs = String.class, contentAs = List.class)
 public class Guesses {
     @JsonIgnore
     public final Comparator<String> comparator = String.CASE_INSENSITIVE_ORDER;
@@ -14,11 +23,20 @@ public class Guesses {
     private final Set<String> before = TreeSortedSet.newSet(comparator);
     private final Set<String> after = TreeSortedSet.newSet(comparator);
 
-    private Guesses() {
+    public Guesses() {
     }
 
     public static Guesses newGuesses() {
         return new Guesses();
+    }
+
+    public static Guesses withGuesses(Collection<String> before, Collection<String> after) {
+        Guesses newGuesses = newGuesses();
+
+        newGuesses.before.addAll(before);
+        newGuesses.after.addAll(after);
+
+        return newGuesses;
     }
 
     @Override
@@ -31,17 +49,18 @@ public class Guesses {
      *
      * @param answer answer to the game
      * @param guess  user's guess
-     * @return true if guess was added, false if already exists in either set
+     * @return
      * @throws IllegalStateException if guess and answer are equal according to this.comparator.
      */
-    public boolean addGuess(String answer, String guess) throws IllegalStateException {
+    public Result addGuess(String answer, String guess) throws IllegalStateException {
         int result = this.comparator.compare(answer, guess);
         if (result == 0) {
-            throw new IllegalStateException("Guess must not equal Answer at this point: guess=%s, answer=%s".formatted(guess, answer));
+            return Result.EQUAL;
         }
 
         Set<String> half = result > 0 ? after : before;
-        return half.add(guess);
+        boolean added = half.add(guess);
+        return added ? Result.ADDED : Result.ALREADY_GUESSED;
     }
 
     public Collection<String> getBeforeGuesses() {
@@ -54,5 +73,11 @@ public class Guesses {
 
     public Comparator<String> comparator() {
         return this.comparator;
+    }
+
+    public enum Result {
+        EQUAL,
+        ALREADY_GUESSED,
+        ADDED
     }
 }

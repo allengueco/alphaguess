@@ -5,9 +5,12 @@ import org.allengueco.game.Guesses;
 import org.allengueco.game.WordSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
+@Component
 public class InitializeGameState implements State {
     private final Logger LOG = LoggerFactory.getLogger(InitializeGameState.class);
 
@@ -18,7 +21,7 @@ public class InitializeGameState implements State {
     }
 
     @Override
-    public ActionResult doAction(GameSession session) {
+    public ActionResult updateSession(GameSession session) {
         ActionResult res = ActionResult.defaultResult(session);
         String selectedWord = wordSelector.randomWord();
         LOG.info("selected answer: {}", selectedWord);
@@ -29,7 +32,7 @@ public class InitializeGameState implements State {
 
         LOG.info("INITIALIZED");
 
-        session.setState(new SubmitGuessState());
+        session.setState(GameSession.State.Submit);
         return res;
     }
 }
