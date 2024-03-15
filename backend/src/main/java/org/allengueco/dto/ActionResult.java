@@ -3,7 +3,7 @@ package org.allengueco.dto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import org.allengueco.game.Guesses;
 import org.allengueco.game.SubmitError;
-import org.allengueco.game.states.GameContext;
+import org.allengueco.game.states.GameSession;
 
 import java.time.Instant;
 
@@ -17,7 +17,7 @@ public class ActionResult {
     public ActionResult() {
     }
 
-    public static ActionResult defaultResult(GameContext context) {
+    public static ActionResult defaultResult(GameSession context) {
         ActionResult res = new ActionResult();
         res.setGuesses(context.getGuesses());
         res.setLastSubmissionTimestamp(context.getLastSubmissionTimestamp());

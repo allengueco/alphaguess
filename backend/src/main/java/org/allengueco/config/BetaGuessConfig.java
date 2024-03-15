@@ -1,5 +1,7 @@
-package org.allengueco.game;
+package org.allengueco.config;
 
+import org.allengueco.game.Dictionary;
+import org.allengueco.game.WordSelector;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class BetaGuessConfig {
     }
 
     @Bean
-    WordSelector word(Random random, @Value("classpath:valid_words.txt") Resource wordResource) throws IOException {
+    WordSelector wordSelector(Random random, @Value("classpath:valid_words.txt") Resource wordResource) throws IOException {
         var words = TreeSortedSet.newSet(Files.readAllLines(wordResource.getFile().toPath()));
 
         return new WordSelector(words, random);

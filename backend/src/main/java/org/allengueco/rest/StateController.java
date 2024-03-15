@@ -1,12 +1,9 @@
-package org.allengueco;
+package org.allengueco.rest;
 
 import jakarta.servlet.http.HttpSession;
 import org.allengueco.dto.ActionResult;
 import org.allengueco.dto.SubmitRequest;
-import org.allengueco.game.Dictionary;
-import org.allengueco.game.WordSelector;
-import org.allengueco.game.states.GameContext;
-import org.allengueco.game.states.InitializeGameState;
+import org.allengueco.service.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Iterator;
-
 @RestController
 @RequestMapping("/api")
 public class StateController {
     private final static Logger LOG = LoggerFactory.getLogger(StateController.class);
 
     @Autowired
-    private Dictionary dictionary;
-
-    @Autowired
-    private WordSelector wordSelector;
+    GameService gameService;
 
     @PostMapping(path = "/submit",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -38,18 +30,6 @@ public class StateController {
             HttpSession session,
             @RequestBody(required = false) SubmitRequest request) {
         String guess = request == null ? null : request.guess();
-        if (session.isNew()) {
-            LOG.info("Initializing new session with id: {}...", session.getId());
-            GameContext newContext = GameContext.empty();
-            newContext.setState(new InitializeGameState(dictionary, wordSelector));
-
-            newContext.doAction(guess); // initializes context
-
-            session.setAttribute("context", newContext);
-        }
-
-        GameContext context = (GameContext) session.getAttribute("context");
-
-        return ResponseEntity.ok(context.doAction(guess));
+        return ResponseEntity.of(gameService.addGuess(session.getId(), guess));
     }
 }

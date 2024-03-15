@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import org.allengueco.dto.SubmitRequest;
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.WordSelector;
+import org.allengueco.rest.StateController;
 import org.eclipse.collections.api.factory.Maps;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

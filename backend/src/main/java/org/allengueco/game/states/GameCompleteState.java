@@ -8,8 +8,8 @@ public class GameCompleteState implements State {
     private final Logger LOG = LoggerFactory.getLogger(GameCompleteState.class);
 
     @Override
-    public ActionResult doAction(GameContext context) {
-        ActionResult result = ActionResult.defaultResult(context);
+    public ActionResult doAction(GameSession session) {
+        ActionResult result = ActionResult.defaultResult(session);
         result.setGameOver(true);
         return result;
     }

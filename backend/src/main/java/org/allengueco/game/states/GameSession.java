@@ -1,26 +1,37 @@
 package org.allengueco.game.states;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.allengueco.dto.ActionResult;
-import org.allengueco.game.Dictionary;
 import org.allengueco.game.Guesses;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.time.Instant;
 
-public class GameContext {
+@RedisHash
+public class GameSession {
+    @Id
+    String id;
     private String answer;
     private String guess;
-    @JsonIgnore
-    private Dictionary dictionary;
     private Guesses guesses;
+    @CreatedDate
     private Instant start;
+    @LastModifiedDate
     private Instant lastSubmissionTimestamp;
     @JsonIgnore
+    @Transient
     private State currentState;
 
-    public static GameContext empty() {
-        return new GameContext();
+    private GameSession(String id) {
+        this.id = id;
+    }
+
+    public static GameSession withId(String id) {
+        return new GameSession(id);
     }
 
     public String getAnswer() {
@@ -37,14 +48,6 @@ public class GameContext {
 
     public void setGuess(String guess) {
         this.guess = guess;
-    }
-
-    public Dictionary getDictionary() {
-        return dictionary;
-    }
-
-    public void setDictionary(Dictionary dictionary) {
-        this.dictionary = dictionary;
     }
 
     public Guesses getGuesses() {
@@ -67,7 +70,7 @@ public class GameContext {
         this.currentState = state;
     }
 
-    public ActionResult doAction(String guess) {
+    public ActionResult updateSession(String guess) {
         this.setGuess(guess);
         return currentState.doAction(this);
     }

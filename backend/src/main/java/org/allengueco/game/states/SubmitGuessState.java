@@ -12,42 +12,36 @@ public class SubmitGuessState implements State {
     private final Logger LOG = LoggerFactory.getLogger(SubmitGuessState.class);
 
     @Override
-    public ActionResult doAction(GameContext context) {
-        ActionResult res = ActionResult.defaultResult(context);
+    public ActionResult doAction(GameSession session) {
+        ActionResult res = ActionResult.defaultResult(session);
         Instant now = Instant.now();
-        String answer = context.getAnswer();
-        String guess = context.getGuess();
+        String answer = session.getAnswer();
+        String guess = session.getGuess();
 
         if (guess == null || guess.isEmpty() || guess.isBlank()) {
-            LOG.info("[guess] is empty. Returning res");
+            LOG.info("[guess] is empty. Returning current session state...");
             return res;
         }
 
-        LOG.info("GUESSING: {}", context.getGuess());
-        Comparator<String> comparator = context.getGuesses().comparator();
+        LOG.info("GUESSING: {}", session.getGuess());
+        Comparator<String> comparator = session.getGuesses().comparator();
 
         if (comparator.compare(answer, guess) == 0) {
             res.setGameOver(true);
             res.setLastSubmissionTimestamp(now);
-            context.setLastSubmissionTimestamp(now);
-            context.setState(new GameCompleteState());
+            session.setLastSubmissionTimestamp(now);
+            session.setState(new GameCompleteState());
         } else {
-            if (context.getDictionary().contains(guess)) {
-                boolean added = context.getGuesses().addGuess(context.getAnswer(), context.getGuess());
-                if (!added) {
-                    LOG.warn("Already guessed: {}", guess);
-                    res.setError(SubmitError.ALREADY_GUESSED);
-                }
-                context.setLastSubmissionTimestamp(now);
-                res.setLastSubmissionTimestamp(now);
-
-            } else {
-                LOG.error("Guessed an invalid word: {}", guess);
-                res.setError(SubmitError.INVALID_WORD);
+            boolean added = session.getGuesses().addGuess(session.getAnswer(), session.getGuess());
+            if (!added) {
+                LOG.warn("Already guessed: {}", guess);
+                res.setError(SubmitError.ALREADY_GUESSED);
             }
+            session.setLastSubmissionTimestamp(now);
+            res.setLastSubmissionTimestamp(now);
         }
 //        res.setGuesses(context.getGuesses());
-        LOG.info("{}", context.getGuesses());
+        LOG.info("{}", session.getGuesses());
         return res;
     }
 }
