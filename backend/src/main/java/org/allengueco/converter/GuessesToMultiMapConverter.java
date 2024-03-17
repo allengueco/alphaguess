@@ -15,8 +15,8 @@ public class GuessesToMultiMapConverter implements Converter<Guesses, Map<String
     @Override
     public Map<String, List<String>> convert(Guesses source) {
         return Map.of(
-                "afterGuesses", source.getAfterGuesses().stream().toList(),
-                "beforeGuesses", source.getBeforeGuesses().stream().toList()
+                "afterGuesses", source.getAfter().stream().toList(),
+                "beforeGuesses", source.getBefore().stream().toList()
         );
     }
 }

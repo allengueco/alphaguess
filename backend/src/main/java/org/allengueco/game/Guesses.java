@@ -1,8 +1,6 @@
 package org.allengueco.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.springframework.data.annotation.Transient;
 
@@ -14,12 +12,8 @@ public class Guesses {
     @JsonIgnore
     @Transient
     public final Comparator<String> comparator = String.CASE_INSENSITIVE_ORDER;
-    @JsonSerialize(as = Set.class)
-    @JsonDeserialize(as = Set.class)
-    private final Set<String> before = TreeSortedSet.newSet(comparator);
-    @JsonSerialize(as = Set.class)
-    @JsonDeserialize(as = Set.class)
-    private final Set<String> after = TreeSortedSet.newSet(comparator);
+    private Set<String> before = TreeSortedSet.newSet(comparator);
+    private Set<String> after = TreeSortedSet.newSet(comparator);
 
     public Guesses() {
     }
@@ -61,16 +55,20 @@ public class Guesses {
         return added ? Result.ADDED : Result.ALREADY_GUESSED;
     }
 
-    public Collection<String> getBeforeGuesses() {
+    public Collection<String> getBefore() {
         return this.before;
     }
 
-    public Collection<String> getAfterGuesses() {
+    public void setBefore(Set<String> before) {
+        this.before = before;
+    }
+
+    public Collection<String> getAfter() {
         return this.after;
     }
 
-    public Comparator<String> comparator() {
-        return this.comparator;
+    public void setAfter(Set<String> after) {
+        this.after = after;
     }
 
     public enum Result {

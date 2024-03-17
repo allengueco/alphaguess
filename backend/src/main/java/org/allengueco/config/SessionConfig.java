@@ -1,16 +1,13 @@
 package org.allengueco.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.allengueco.converter.GuessesToMultiMapConverter;
-import org.allengueco.converter.MultiMapToGuessesConverter;
+import com.fasterxml.jackson.datatype.eclipsecollections.EclipseCollectionsModule;
 import org.allengueco.game.states.GameSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.convert.RedisCustomConversions;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -18,14 +15,17 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
-import java.util.List;
-
 @Configuration
 @EnableRedisIndexedHttpSession
 public class SessionConfig {
     @Bean
     LettuceConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory();
+    }
+
+    @Bean
+    EclipseCollectionsModule eclipseCollectionsModule() {
+        return new EclipseCollectionsModule();
     }
 
     @Bean

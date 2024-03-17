@@ -22,8 +22,8 @@ class GuessesTest {
 
         guesses.addGuess(ANSWER, GUESS);
 
-        assertIterableEquals(List.of(GUESS), guesses.getAfterGuesses());
-        assertIterableEquals(List.of(), guesses.getBeforeGuesses());
+        assertIterableEquals(List.of(GUESS), guesses.getAfter());
+        assertIterableEquals(List.of(), guesses.getBefore());
     }
 
     @Test
@@ -33,8 +33,8 @@ class GuessesTest {
 
         guesses.addGuess(ANSWER, GUESS);
 
-        assertIterableEquals(List.of(GUESS), guesses.getBeforeGuesses());
-        assertIterableEquals(List.of(), guesses.getAfterGuesses());
+        assertIterableEquals(List.of(GUESS), guesses.getBefore());
+        assertIterableEquals(List.of(), guesses.getAfter());
     }
 
     @Test
@@ -44,8 +44,8 @@ class GuessesTest {
 
         assertThrows(IllegalStateException.class, () -> guesses.addGuess(ANSWER, GUESS));
 
-        assertTrue(guesses.getBeforeGuesses().isEmpty());
-        assertTrue(guesses.getAfterGuesses().isEmpty());
+        assertTrue(guesses.getBefore().isEmpty());
+        assertTrue(guesses.getAfter().isEmpty());
     }
 
     @Test
@@ -60,8 +60,8 @@ class GuessesTest {
         assertEquals(Guesses.Result.ADDED, g1);
         assertEquals(Guesses.Result.ALREADY_GUESSED, g2);
 
-        assertTrue(guesses.getBeforeGuesses().isEmpty());
-        assertFalse(guesses.getAfterGuesses().isEmpty());
+        assertTrue(guesses.getBefore().isEmpty());
+        assertFalse(guesses.getAfter().isEmpty());
     }
 
     @Test
@@ -72,7 +72,7 @@ class GuessesTest {
         guesses.addGuess(ANSWER, "BOOST");
         guesses.addGuess(ANSWER, "ACORN");
 
-        assertIterableEquals(List.of("ACORN", "BASE", "BOOST"), guesses.getAfterGuesses());
-        assertTrue(guesses.getBeforeGuesses().isEmpty());
+        assertIterableEquals(List.of("ACORN", "BASE", "BOOST"), guesses.getAfter());
+        assertTrue(guesses.getBefore().isEmpty());
     }
 }
