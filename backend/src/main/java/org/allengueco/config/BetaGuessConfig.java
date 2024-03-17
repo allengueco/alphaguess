@@ -16,7 +16,7 @@ import java.util.Random;
 
 @Configuration
 public class BetaGuessConfig {
-    private final Logger LOG = LoggerFactory.getLogger(BetaGuessConfig.class);
+    private final Logger log = LoggerFactory.getLogger(BetaGuessConfig.class);
 
     @Bean
     Dictionary englishDictionary(@Value("classpath:dictionary.txt") Resource dictionaryResource) throws IOException {

@@ -1,34 +1,24 @@
 package org.allengueco.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.springframework.data.annotation.Transient;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Set;
+import java.util.*;
 
 public class Guesses {
     @JsonIgnore
     @Transient
     public final Comparator<String> comparator = String.CASE_INSENSITIVE_ORDER;
-    private Set<String> before = TreeSortedSet.newSet(comparator);
-    private Set<String> after = TreeSortedSet.newSet(comparator);
+    private Set<String> before;
+    private Set<String> after;
 
     public Guesses() {
+        this.before = new TreeSet<>(comparator);
+        this.after = new TreeSet<>(comparator);
     }
 
-    public static Guesses newGuesses() {
+    public static Guesses empty() {
         return new Guesses();
-    }
-
-    public static Guesses withGuesses(Collection<String> before, Collection<String> after) {
-        Guesses newGuesses = newGuesses();
-
-        newGuesses.before.addAll(before);
-        newGuesses.after.addAll(after);
-
-        return newGuesses;
     }
 
     @Override
@@ -69,6 +59,19 @@ public class Guesses {
 
     public void setAfter(Set<String> after) {
         this.after = after;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Guesses guesses = (Guesses) o;
+        return Objects.equals(getBefore(), guesses.getBefore()) && Objects.equals(getAfter(), guesses.getAfter());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBefore(), getAfter());
     }
 
     public enum Result {

@@ -6,7 +6,6 @@ import org.allengueco.game.SubmitError;
 import org.allengueco.game.WordSelector;
 import org.allengueco.game.states.GameSession;
 import org.allengueco.game.states.GameStateHandler;
-import org.allengueco.game.states.InitializeGameState;
 import org.allengueco.repository.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,31 +43,26 @@ public class GameService {
      * @return
      */
     public Optional<ActionResult> addGuess(String id, String guess) {
-        Optional<GameSession> session = gameRepository
-                .findById(id);
+        GameSession session = gameRepository
+                .findById(id).orElseGet(() -> newGameSession(id));
+
         if (guess == null || dictionary.contains(guess)) {
-            Optional<GameSession> retrievedOrDefault = session.or(() -> newGameSession(id));
-            if (retrievedOrDefault.isPresent()) {
-                var s = retrievedOrDefault.get();
-                s.setGuess(guess);
-                ActionResult res = stateHandler.handle(s);
-                gameRepository.save(s);
-                return Optional.of(res);
-            } else {
-                return Optional.empty();
-            }
+            session.setGuess(guess);
+            ActionResult res = stateHandler.handle(session);
+            gameRepository.save(session);
+            return Optional.of(res);
         } else {
-            return session.map(s -> stateHandler.handle(s))
+            return Optional.of(session).map(s -> stateHandler.handle(s))
                     .map(r -> decorateWithError(r, SubmitError.INVALID_WORD));
         }
     }
 
-    Optional<GameSession> newGameSession(String id) {
+    GameSession newGameSession(String id) {
         log.info("Creating new session with id {}", id);
         GameSession newSession = GameSession.withId(id);
         newSession.setState(GameSession.State.Initialize);
         stateHandler.handle(newSession); // no need to pass in a guess, this is to initialize session
 
-        return Optional.of(newSession);
+        return newSession;
     }
 }

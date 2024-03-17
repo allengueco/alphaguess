@@ -3,6 +3,8 @@ package org.allengueco.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.eclipsecollections.EclipseCollectionsModule;
 import org.allengueco.game.states.GameSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,6 +20,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @Configuration
 @EnableRedisIndexedHttpSession
 public class SessionConfig {
+    private final Logger log = LoggerFactory.getLogger(SessionConfig.class);
     @Bean
     LettuceConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory();
@@ -34,7 +37,7 @@ public class SessionConfig {
     }
 
     @Bean
-    RedisTemplate<String, GameSession> sessionRedisTemplate(
+    RedisTemplate<String, GameSession> redisTemplate(
             RedisConnectionFactory redisConnectionFactory,
             RedisSerializer<GameSession> gameSessionRedisSerializer) {
         final RedisTemplate<String, GameSession> redisTemplate = new RedisTemplate<>();
@@ -42,17 +45,11 @@ public class SessionConfig {
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.afterPropertiesSet();
-
         redisTemplate.setDefaultSerializer(gameSessionRedisSerializer);
+        redisTemplate.afterPropertiesSet();
 
         return redisTemplate;
     }
-
-//    @Bean
-//    RedisCustomConversions redisCustomConversions(GuessesToMultiMapConverter gtmp, MultiMapToGuessesConverter mptg) {
-//        return new RedisCustomConversions(List.of(gtmp, mptg));
-//    }
 
     @Bean
     public CookieSerializer cookieSerializer() {

@@ -12,7 +12,7 @@ class GuessesTest {
 
     @BeforeEach
     void setup() {
-        guesses = Guesses.newGuesses();
+        guesses = Guesses.empty();
     }
 
     @Test

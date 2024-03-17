@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class StateController {
-    private final static Logger LOG = LoggerFactory.getLogger(StateController.class);
+    private final static Logger log = LoggerFactory.getLogger(StateController.class);
 
     @Autowired
     GameService gameService;

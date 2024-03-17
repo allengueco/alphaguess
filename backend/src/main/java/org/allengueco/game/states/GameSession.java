@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.convert.RedisConverter;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @RedisHash
 public class GameSession {
@@ -21,7 +22,6 @@ public class GameSession {
     State state;
     private String answer;
     private String guess;
-
     private Guesses guesses;
     @CreatedDate
     private Instant start;
@@ -82,6 +82,32 @@ public class GameSession {
 
     public void setLastSubmissionTimestamp(Instant lastSubmissionTimestamp) {
         this.lastSubmissionTimestamp = lastSubmissionTimestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameSession that = (GameSession) o;
+        return Objects.equals(id, that.id) && getState() == that.getState() && Objects.equals(getAnswer(), that.getAnswer()) && Objects.equals(getGuess(), that.getGuess()) && Objects.equals(getGuesses(), that.getGuesses()) && Objects.equals(getStart(), that.getStart()) && Objects.equals(getLastSubmissionTimestamp(), that.getLastSubmissionTimestamp());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, getState(), getAnswer(), getGuess(), getGuesses(), getStart(), getLastSubmissionTimestamp());
+    }
+
+    @Override
+    public String toString() {
+        return "GameSession{" +
+                "id='" + id + '\'' +
+                ", state=" + state +
+                ", answer='" + answer + '\'' +
+                ", guess='" + guess + '\'' +
+                ", guesses=" + guesses +
+                ", start=" + start +
+                ", lastSubmissionTimestamp=" + lastSubmissionTimestamp +
+                '}';
     }
 
     public enum State {

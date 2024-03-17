@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GameCompleteState implements State {
-    private final Logger LOG = LoggerFactory.getLogger(GameCompleteState.class);
+    private final Logger log = LoggerFactory.getLogger(GameCompleteState.class);
 
     @Override
     public ActionResult updateSession(GameSession session) {
