@@ -1,9 +1,13 @@
 package org.allengueco.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.springframework.data.annotation.Transient;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class Guesses {
     @JsonIgnore
@@ -13,8 +17,8 @@ public class Guesses {
     private Set<String> after;
 
     public Guesses() {
-        this.before = new TreeSet<>(comparator);
-        this.after = new TreeSet<>(comparator);
+        this.before = TreeSortedSet.newSet(comparator);
+        this.after = TreeSortedSet.newSet(comparator);
     }
 
     public static Guesses empty() {
@@ -45,16 +49,16 @@ public class Guesses {
         return added ? Result.ADDED : Result.ALREADY_GUESSED;
     }
 
-    public Collection<String> getBefore() {
-        return this.before;
+    public List<String> getBefore() {
+        return this.before.stream().toList();
     }
 
     public void setBefore(Set<String> before) {
         this.before = before;
     }
 
-    public Collection<String> getAfter() {
-        return this.after;
+    public List<String> getAfter() {
+        return this.after.stream().toList();
     }
 
     public void setAfter(Set<String> after) {

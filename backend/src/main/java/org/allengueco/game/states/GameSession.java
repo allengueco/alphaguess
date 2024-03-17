@@ -1,16 +1,10 @@
 package org.allengueco.game.states;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.StdKeyDeserializers;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
-import org.allengueco.dto.ActionResult;
 import org.allengueco.game.Guesses;
-import org.springframework.boot.jackson.JsonObjectDeserializer;
-import org.springframework.data.annotation.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.convert.RedisConverter;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -19,7 +13,7 @@ import java.util.Objects;
 public class GameSession {
     @Id
     String id;
-    State state;
+    private State state;
     private String answer;
     private String guess;
     private Guesses guesses;
@@ -28,12 +22,23 @@ public class GameSession {
     @LastModifiedDate
     private Instant lastSubmissionTimestamp;
 
+    public GameSession() {
+    }
+
     private GameSession(String id) {
         this.id = id;
     }
 
     public static GameSession withId(String id) {
         return new GameSession(id);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public State getState() {

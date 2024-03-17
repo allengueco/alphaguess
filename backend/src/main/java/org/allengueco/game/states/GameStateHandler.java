@@ -4,8 +4,6 @@ import org.allengueco.dto.ActionResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.function.Function;
-
 @Component
 public class GameStateHandler {
     @Autowired
@@ -18,7 +16,7 @@ public class GameStateHandler {
     GameCompleteState gameCompleteState;
 
     public ActionResult handle(GameSession session) {
-        State stateHandler = switch(session.state) {
+        State stateHandler = switch (session.getState()) {
             case Initialize -> initializeGameState;
             case Submit -> submitGuessState;
             case Complete -> gameCompleteState;

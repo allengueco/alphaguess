@@ -1,6 +1,5 @@
 package org.allengueco.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import org.allengueco.game.Guesses;
 import org.allengueco.game.SubmitError;
 import org.allengueco.game.states.GameSession;
@@ -9,7 +8,6 @@ import java.time.Instant;
 
 public class ActionResult {
     SubmitError error;
-    @JsonUnwrapped
     Guesses guesses;
     boolean isGameOver;
     Instant lastSubmissionTimestamp;

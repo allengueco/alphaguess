@@ -21,6 +21,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @EnableRedisIndexedHttpSession
 public class SessionConfig {
     private final Logger log = LoggerFactory.getLogger(SessionConfig.class);
+
     @Bean
     LettuceConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory();
