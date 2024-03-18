@@ -49,7 +49,9 @@ public class GameService {
         if (guess == null || dictionary.contains(guess)) {
             session.setGuess(guess);
             ActionResult res = stateHandler.handle(session);
-            gameRepository.save(session);
+            var b = gameRepository.save(session);
+            log.info("SAVED...: {}", b);
+
             gameRepository.findById(id).ifPresent(s -> log.info("FROM REPO: {}", s));
             return Optional.of(res);
         } else {
