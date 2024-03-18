@@ -45,19 +45,19 @@ class StateControllerTest {
 
         var first = testRequest(new SubmitRequest("one"), null)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.beforeGuesses", Matchers.contains("one")))
+                .andExpect(jsonPath("$.guesses.before", Matchers.contains("one")))
                 .andExpect(header().exists("Set-Cookie"))
                 .andReturn();
         var firstCookie = first.getResponse().getHeader("Set-Cookie").split(";")[0].split("=")[1];
 
         var second = testRequest(new SubmitRequest("two"), firstCookie)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.beforeGuesses", containsInRelativeOrder("one", "two")))
+                .andExpect(jsonPath("$.guesses.before", containsInRelativeOrder("one", "two")))
                 .andReturn();
 
         var third = testRequest(new SubmitRequest("tyrant"), firstCookie)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.beforeGuesses", containsInRelativeOrder("one", "two", "tyrant")))
+                .andExpect(jsonPath("$.guesses.before", containsInRelativeOrder("one", "two", "tyrant")))
                 .andReturn();
     }
 
@@ -68,7 +68,7 @@ class StateControllerTest {
 
         testRequest(new SubmitRequest("apple"), null)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.afterGuesses", Matchers.contains("apple")))
+                .andExpect(jsonPath("$.guesses.after", Matchers.contains("apple")))
                 .andExpect(header().exists("Set-Cookie"))
                 .andReturn();
     }

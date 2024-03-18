@@ -4,10 +4,12 @@ import org.allengueco.game.Guesses;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.time.Instant;
 import java.util.Objects;
 
+@RedisHash
 public class GameSession {
     @Id
     String id;
