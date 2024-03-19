@@ -26,6 +26,7 @@ import org.testcontainers.utility.DockerImageName;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -83,7 +84,8 @@ public class GameSessionIT {
                 .split(";")[0]
                 .split("=")[1];
 
-        testRequest(new SubmitRequest("port"), sessionCookie)
+        var s = testRequest(new SubmitRequest("port"), sessionCookie)
+                .andDo(print())
                 .andExpectAll(
                         jsonPath("$.gameOver", Matchers.is(false)),
                         jsonPath("$.error", Matchers.nullValue()),
@@ -91,7 +93,7 @@ public class GameSessionIT {
                         jsonPath("$.guesses.after", Matchers.empty()),
                         jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great", "port")),
                         jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue())
-                );
+                ).andReturn();
     }
 
     @Test
@@ -139,11 +141,7 @@ public class GameSessionIT {
     private ResultActions testRequest(SubmitRequest request, String sessionCookie) throws Exception {
         var postRequest = post(SUBMIT_API);
         if (request != null) {
-            postRequest.content("""
-                            {
-                                "guess" : "%s"
-                            }
-                            """.formatted(request.guess()))
+            postRequest.content("{\"guess\":\"%s\"}".formatted(request.guess()))
                     .contentType(MediaType.APPLICATION_JSON);
         }
         if (sessionCookie != null) {

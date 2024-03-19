@@ -21,7 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataRedisTest
 @Testcontainers(disabledWithoutDocker = true)
-public class GameRepositoryTest {
+public class GameSessionRepositoryTest {
     @Container
     @ServiceConnection
     static final RedisContainer REDIS_CONTAINER = new RedisContainer(DockerImageName.parse("redis:latest"));
@@ -59,5 +59,27 @@ public class GameRepositoryTest {
                 .extracting(Guesses::getBefore)
                 .asList()
                 .containsExactlyElementsOf(List.of("mandarin", "power"));
+    }
+
+    @Test
+    void saveEmptyGuess() {
+        GameSession s = GameSession.withId("1");
+
+        s.setState(GameSession.State.Submit);
+        s.setAnswer("answer");
+        s.setGuess("guess");
+        s.setStart(Instant.EPOCH);
+        s.setLastSubmissionTimestamp(Instant.MAX);
+
+        s.setGuesses(Guesses.empty());
+
+        repository.save(s);
+        var retrieved = repository.findById("1");
+        
+        assertThat(retrieved)
+                .get()
+                .hasNoNullFieldsOrProperties()
+                .extracting(GameSession::getGuesses)
+                .isNotNull();
     }
 }

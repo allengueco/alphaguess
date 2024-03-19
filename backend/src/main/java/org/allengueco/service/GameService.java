@@ -50,7 +50,7 @@ public class GameService {
             session.setGuess(guess);
             ActionResult res = stateHandler.handle(session);
             var b = gameRepository.save(session);
-            log.info("SAVED...: {}", b);
+            log.info("SAVED...: {}", b.getGuesses());
 
             gameRepository.findById(id).ifPresent(s -> log.info("FROM REPO: {}", s));
             return Optional.of(res);
