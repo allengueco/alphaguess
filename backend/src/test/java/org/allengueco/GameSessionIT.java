@@ -67,10 +67,61 @@ public class GameSessionIT {
     }
 
     @Test
+    void whenGuessingWithActiveSession_thenShouldReturnCurrentState() throws Exception {
+        when(dictionary.contains(anyString())).thenReturn(true);
+        when(wordSelector.randomWord()).thenReturn("answer");
+
+        var initRequest = testRequest(new SubmitRequest("great"), null)
+                .andExpectAll(
+                        status().isOk(),
+                        header().exists("Set-Cookie")
+                ).andReturn();
+
+        var sessionCookie = initRequest
+                .getResponse()
+                .getHeader("Set-Cookie")
+                .split(";")[0]
+                .split("=")[1];
+
+        testRequest(new SubmitRequest("port"), sessionCookie)
+                .andExpectAll(
+                        jsonPath("$.gameOver", Matchers.is(false)),
+                        jsonPath("$.error", Matchers.nullValue()),
+                        jsonPath("$.guesses", Matchers.notNullValue()),
+                        jsonPath("$.guesses.after", Matchers.empty()),
+                        jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great", "port")),
+                        jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue())
+                );
+    }
+
+    @Test
     void whenNoGuessWithActiveSession_thenShouldReturnCurrentState() throws Exception {
         when(dictionary.contains(anyString())).thenReturn(true);
         when(wordSelector.randomWord()).thenReturn("answer");
+
+        var initRequest = testRequest(new SubmitRequest("great"), null)
+                .andExpectAll(
+                        status().isOk(),
+                        header().exists("Set-Cookie")
+                ).andReturn();
+
+        var sessionCookie = initRequest
+                .getResponse()
+                .getHeader("Set-Cookie")
+                .split(";")[0]
+                .split("=")[1];
+
+        testRequest(null, sessionCookie)
+                .andExpectAll(
+                        jsonPath("$.gameOver", Matchers.is(false)),
+                        jsonPath("$.error", Matchers.nullValue()),
+                        jsonPath("$.guesses", Matchers.notNullValue()),
+                        jsonPath("$.guesses.after", Matchers.empty()),
+                        jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great")),
+                        jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue())
+                );
     }
+
 
     @Test
     void whenInitiatingFirstGuess_thenShouldAssignCookie() throws Exception {
