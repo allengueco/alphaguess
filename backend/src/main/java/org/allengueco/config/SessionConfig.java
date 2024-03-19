@@ -8,24 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisIndexedHttpSession;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
 @Configuration
-@EnableRedisIndexedHttpSession
+@EnableRedisHttpSession
 public class SessionConfig {
     private final Logger log = LoggerFactory.getLogger(SessionConfig.class);
-
-    @Bean
-    LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
-    }
 
     @Bean
     EclipseCollectionsModule eclipseCollectionsModule() {

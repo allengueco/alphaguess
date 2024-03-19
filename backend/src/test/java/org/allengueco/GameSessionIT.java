@@ -23,6 +23,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,37 +37,64 @@ public class GameSessionIT {
     static final RedisContainer REDIS_CONTAINER = new RedisContainer(DockerImageName.parse("redis:latest"));
     private static final Logger log = LoggerFactory.getLogger(GameSessionIT.class);
     final String SUBMIT_API = "/api/submit";
+
     @Autowired
     MockMvc mvc;
+
     @Autowired
     Dictionary dictionary;
+
     @Autowired
     WordSelector wordSelector;
+
     @Autowired
     GameRepository gameRepository;
 
     @Test
-    void guessOnceWithoutExistingCookie() throws Exception {
+    void whenNoGuessAndNoActiveSession_thenShouldReturnEmptyActionResult() throws Exception {
+        when(wordSelector.randomWord()).thenReturn("answer");
+        testRequest(null, null)
+                .andExpectAll(
+                        header().exists("Set-Cookie"),
+                        status().isOk(),
+                        jsonPath("$.guesses", Matchers.notNullValue()),
+                        jsonPath("$.guesses.before", Matchers.empty()),
+                        jsonPath("$.guesses.after", Matchers.empty()),
+                        jsonPath("$.error", Matchers.nullValue()),
+                        jsonPath("$.gameOver", Matchers.is(false)),
+                        jsonPath("$.lastSubmissionTimestamp", Matchers.nullValue())
+                );
+    }
+
+    @Test
+    void whenNoGuessWithActiveSession_thenShouldReturnCurrentState() throws Exception {
+        when(dictionary.contains(anyString())).thenReturn(true);
+        when(wordSelector.randomWord()).thenReturn("answer");
+    }
+
+    @Test
+    void whenInitiatingFirstGuess_thenShouldAssignCookie() throws Exception {
         when(dictionary.contains("guess")).thenReturn(true);
         when(wordSelector.randomWord()).thenReturn("answer");
-        var response = testRequest(new SubmitRequest("guess"), null)
+
+        testRequest(new SubmitRequest("guess"), null)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guesses.before[0]", Matchers.is("guess")))
                 .andExpect(header().exists("Set-Cookie"))
                 .andReturn();
-
-        var cookie = response.getResponse().getHeader("Set-Cookie").split(";")[0].split("=")[1];
-
-
-        gameRepository.findAll().forEach(s -> log.info(s.toString()));
     }
 
+
     private ResultActions testRequest(SubmitRequest request, String sessionCookie) throws Exception {
-        var postRequest = post(SUBMIT_API)
-                .content("""
-                        {"guess" : "%s"}
-                        """.formatted(request.guess()))
-                .contentType(MediaType.APPLICATION_JSON);
+        var postRequest = post(SUBMIT_API);
+        if (request != null) {
+            postRequest.content("""
+                            {
+                                "guess" : "%s"
+                            }
+                            """.formatted(request.guess()))
+                    .contentType(MediaType.APPLICATION_JSON);
+        }
         if (sessionCookie != null) {
             postRequest.cookie(new Cookie("SESSION", sessionCookie));
         }
@@ -81,5 +109,4 @@ public class GameSessionIT {
         @MockBean
         WordSelector wordSelector;
     }
-
 }
