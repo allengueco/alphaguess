@@ -32,7 +32,6 @@ public class BetaGuessConfig {
         return new WordSelector(words, random);
     }
 
-
     @Bean
     Random random() {
         return new Random(); //thread local random?

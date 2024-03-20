@@ -42,7 +42,9 @@ class GuessesTest {
         final String ANSWER = "CORRECT";
         final String GUESS = "CORRECT";
 
-        assertThrows(IllegalStateException.class, () -> guesses.addGuess(ANSWER, GUESS));
+        var result = guesses.addGuess(ANSWER, GUESS);
+
+        assertEquals(Guesses.Result.EQUAL, result);
 
         assertTrue(guesses.getBefore().isEmpty());
         assertTrue(guesses.getAfter().isEmpty());

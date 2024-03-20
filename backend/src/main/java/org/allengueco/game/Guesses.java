@@ -1,20 +1,19 @@
 package org.allengueco.game;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.data.annotation.Transient;
+import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-public class Guesses {
-    @JsonIgnore
-    @Transient
-    public final Comparator<String> comparator = String.CASE_INSENSITIVE_ORDER;
-    private Set<String> before;
-    private Set<String> after;
+public class Guesses implements Serializable {
+    private Set<String> before = TreeSortedSet.newSet(String.CASE_INSENSITIVE_ORDER);
+
+    private Set<String> after = TreeSortedSet.newSet(String.CASE_INSENSITIVE_ORDER);
 
     public Guesses() {
-        this.before = new TreeSet<>(comparator);
-        this.after = new TreeSet<>(comparator);
+
     }
 
     public static Guesses empty() {
@@ -27,7 +26,7 @@ public class Guesses {
     }
 
     /**
-     * Adds guess to either before or after guesses, according to the {@link Guesses#comparator}.
+     * Adds guess to either before or after guesses, according to the {@link String#CASE_INSENSITIVE_ORDER}.
      *
      * @param answer answer to the game
      * @param guess  user's guess
@@ -35,7 +34,7 @@ public class Guesses {
      * @throws IllegalStateException if guess and answer are equal according to this.comparator.
      */
     public Result addGuess(String answer, String guess) throws IllegalStateException {
-        int result = this.comparator.compare(answer, guess);
+        int result = String.CASE_INSENSITIVE_ORDER.compare(answer, guess);
         if (result == 0) {
             return Result.EQUAL;
         }

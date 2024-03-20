@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 public class GameService {
-    private final Logger log = LoggerFactory.getLogger(GameSession.class);
+    private final Logger log = LoggerFactory.getLogger(GameService.class);
     @Autowired
     GameRepository gameRepository;
 
@@ -49,10 +49,7 @@ public class GameService {
         if (guess == null || dictionary.contains(guess)) {
             session.setGuess(guess);
             ActionResult res = stateHandler.handle(session);
-            var b = gameRepository.save(session);
-            log.info("SAVED...: {}", b.getGuesses());
-
-            gameRepository.findById(id).ifPresent(s -> log.info("FROM REPO: {}", s));
+            gameRepository.save(session);
             return Optional.of(res);
         } else {
             return Optional.of(session).map(s -> stateHandler.handle(s))

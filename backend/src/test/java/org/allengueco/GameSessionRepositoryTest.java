@@ -75,7 +75,7 @@ public class GameSessionRepositoryTest {
 
         repository.save(s);
         var retrieved = repository.findById("1");
-        
+
         assertThat(retrieved)
                 .get()
                 .hasNoNullFieldsOrProperties()

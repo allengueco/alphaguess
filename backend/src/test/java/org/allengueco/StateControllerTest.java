@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import org.allengueco.dto.SubmitRequest;
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.WordSelector;
+import org.allengueco.repository.GameRepository;
 import org.allengueco.rest.StateController;
 import org.eclipse.collections.api.factory.Maps;
 import org.hamcrest.Matchers;
@@ -50,12 +51,12 @@ class StateControllerTest {
                 .andReturn();
         var firstCookie = first.getResponse().getHeader("Set-Cookie").split(";")[0].split("=")[1];
 
-        var second = testRequest(new SubmitRequest("two"), firstCookie)
+        testRequest(new SubmitRequest("two"), firstCookie)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guesses.before", containsInRelativeOrder("one", "two")))
                 .andReturn();
 
-        var third = testRequest(new SubmitRequest("tyrant"), firstCookie)
+        testRequest(new SubmitRequest("tyrant"), firstCookie)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.guesses.before", containsInRelativeOrder("one", "two", "tyrant")))
                 .andReturn();
@@ -88,6 +89,8 @@ class StateControllerTest {
     @TestConfiguration
     @EnableSpringHttpSession
     static class StateControllerConfiguration {
+        @MockBean
+        GameRepository gameRepository;
 
         @Bean
         MapSessionRepository sessionRepository() {

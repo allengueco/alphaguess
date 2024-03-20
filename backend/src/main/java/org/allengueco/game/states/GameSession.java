@@ -6,11 +6,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
 @RedisHash
-public class GameSession {
+public class GameSession implements Serializable {
     @Id
     String id;
     private State state;
