@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +13,7 @@ class GuessesTest {
 
     @BeforeEach
     void setup() {
-        guesses = Guesses.empty();
+        guesses = new Guesses(Set.of(), Set.of());
     }
 
     @Test
@@ -22,8 +23,8 @@ class GuessesTest {
 
         guesses.addGuess(ANSWER, GUESS);
 
-        assertIterableEquals(List.of(GUESS), guesses.getAfter());
-        assertIterableEquals(List.of(), guesses.getBefore());
+        assertIterableEquals(List.of(GUESS), guesses.after());
+        assertIterableEquals(List.of(), guesses.before());
     }
 
     @Test
@@ -33,8 +34,8 @@ class GuessesTest {
 
         guesses.addGuess(ANSWER, GUESS);
 
-        assertIterableEquals(List.of(GUESS), guesses.getBefore());
-        assertIterableEquals(List.of(), guesses.getAfter());
+        assertIterableEquals(List.of(GUESS), guesses.before());
+        assertIterableEquals(List.of(), guesses.after());
     }
 
     @Test
@@ -44,10 +45,10 @@ class GuessesTest {
 
         var result = guesses.addGuess(ANSWER, GUESS);
 
-        assertEquals(Guesses.Result.EQUAL, result);
+        assertEquals(Result.EQUAL, result);
 
-        assertTrue(guesses.getBefore().isEmpty());
-        assertTrue(guesses.getAfter().isEmpty());
+        assertTrue(guesses.before().isEmpty());
+        assertTrue(guesses.after().isEmpty());
     }
 
     @Test
@@ -56,14 +57,14 @@ class GuessesTest {
         final String GUESS1 = "BLACK";
         final String GUESS2 = "blacK";
 
-        Guesses.Result g1 = guesses.addGuess(ANSWER, GUESS1);
-        Guesses.Result g2 = guesses.addGuess(ANSWER, GUESS2);
+        Result g1 = guesses.addGuess(ANSWER, GUESS1);
+        Result g2 = guesses.addGuess(ANSWER, GUESS2);
 
-        assertEquals(Guesses.Result.ADDED, g1);
-        assertEquals(Guesses.Result.ALREADY_GUESSED, g2);
+        assertEquals(Result.ADDED, g1);
+        assertEquals(Result.ALREADY_GUESSED, g2);
 
-        assertTrue(guesses.getBefore().isEmpty());
-        assertFalse(guesses.getAfter().isEmpty());
+        assertTrue(guesses.before().isEmpty());
+        assertFalse(guesses.after().isEmpty());
     }
 
     @Test
@@ -74,7 +75,7 @@ class GuessesTest {
         guesses.addGuess(ANSWER, "BOOST");
         guesses.addGuess(ANSWER, "ACORN");
 
-        assertIterableEquals(List.of("ACORN", "BASE", "BOOST"), guesses.getAfter());
-        assertTrue(guesses.getBefore().isEmpty());
+        assertIterableEquals(List.of("ACORN", "BASE", "BOOST"), guesses.after());
+        assertTrue(guesses.before().isEmpty());
     }
 }

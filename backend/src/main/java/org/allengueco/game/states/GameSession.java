@@ -1,122 +1,127 @@
 package org.allengueco.game.states;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.allengueco.game.Guesses;
+import org.allengueco.game.SubmitError;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.redis.core.RedisHash;
 
-import java.io.Serializable;
 import java.time.Instant;
-import java.util.Objects;
 
 @RedisHash
-public class GameSession implements Serializable {
-    @Id
-    String id;
-    private State state;
-    private String answer;
-    private String guess;
-    private Guesses guesses;
-    @CreatedDate
-    private Instant start;
-    @LastModifiedDate
-    private Instant lastSubmissionTimestamp;
+public record GameSession(@Id String id,
+                          String answer,
+                          String guess,
+                          State state,
+                          @JsonView(Summary.class)
+                          Guesses guesses,
+                          @JsonView(Summary.class)
+                          SubmitError error,
 
-    public GameSession() {
-    }
+                          @CreatedDate
+                          Instant start,
+                          @JsonView(Summary.class)
+                          @LastModifiedDate
+                          Instant lastSubmissionTimestamp,
+                          @JsonView(Summary.class)
+                          boolean isGameOver) {
 
-    private GameSession(String id) {
-        this.id = id;
-    }
-
-    public static GameSession withId(String id) {
-        return new GameSession(id);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public String getGuess() {
-        return guess;
-    }
-
-    public void setGuess(String guess) {
-        this.guess = guess;
-    }
-
-    public Guesses getGuesses() {
-        return guesses;
-    }
-
-    public void setGuesses(Guesses guesses) {
-        this.guesses = guesses;
-    }
-
-    public Instant getStart() {
-        return start;
-    }
-
-    public void setStart(Instant start) {
-        this.start = start;
-    }
-
-    public Instant getLastSubmissionTimestamp() {
-        return lastSubmissionTimestamp;
-    }
-
-    public void setLastSubmissionTimestamp(Instant lastSubmissionTimestamp) {
-        this.lastSubmissionTimestamp = lastSubmissionTimestamp;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GameSession that = (GameSession) o;
-        return Objects.equals(id, that.id) && getState() == that.getState() && Objects.equals(getAnswer(), that.getAnswer()) && Objects.equals(getGuess(), that.getGuess()) && Objects.equals(getGuesses(), that.getGuesses()) && Objects.equals(getStart(), that.getStart()) && Objects.equals(getLastSubmissionTimestamp(), that.getLastSubmissionTimestamp());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, getState(), getAnswer(), getGuess(), getGuesses(), getStart(), getLastSubmissionTimestamp());
+    public Mutate mutate() {
+        return new Mutate(this);
     }
 
     @Override
     public String toString() {
-        return "GameSession{" +
-                "id='" + id + '\'' +
-                ", state=" + state +
-                ", answer='" + answer + '\'' +
-                ", guess='" + guess + '\'' +
-                ", guesses=" + guesses +
-                ", start=" + start +
-                ", lastSubmissionTimestamp=" + lastSubmissionTimestamp +
-                '}';
+        return "GameSession{" + "id='" + id + '\'' + ", state=" + state + ", answer='" + answer + '\'' + ", guess='" + guess + '\'' + ", guesses=" + guesses + ", start=" + start + ", lastSubmissionTimestamp=" + lastSubmissionTimestamp + '}';
     }
 
     public enum State {
         Initialize, Submit, Complete
+    }
+
+    public static class Summary {
+
+    }
+
+    /**
+     * Not really modify since I want to keep {@link GameSession} immutable. I copy over the fields and make changes
+     */
+    public static class Mutate {
+        String id;
+        State state;
+        String answer;
+        String guess;
+        Guesses guesses;
+        SubmitError error;
+        Instant start;
+        Instant lastSubmissionTimestamp;
+        boolean isGameOver;
+
+        public Mutate(String id, State state, String answer, String guess, Guesses guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
+            this.id = id;
+            this.state = state;
+            this.answer = answer;
+            this.guess = guess;
+            this.guesses = guesses;
+            this.error = error;
+            this.start = start;
+            this.lastSubmissionTimestamp = lastSubmissionTimestamp;
+            this.isGameOver = isGameOver;
+        }
+
+        public Mutate(GameSession s) {
+            this(s.id, s.state, s.answer, s.guess, s.guesses, s.error, s.start, s.lastSubmissionTimestamp, s.isGameOver);
+        }
+
+        public Mutate withId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Mutate withState(State state) {
+            this.state = state;
+            return this;
+        }
+
+        public Mutate withAnswer(String answer) {
+            this.answer = answer;
+            return this;
+        }
+
+        public Mutate withGuess(String guess) {
+            this.guess = guess;
+            return this;
+        }
+
+        public Mutate withGuesses(Guesses guesses) {
+            this.guesses = guesses;
+            return this;
+        }
+
+        public Mutate withError(SubmitError error) {
+            this.error = error;
+            return this;
+        }
+
+        public Mutate withStart(Instant start) {
+            this.start = start;
+            return this;
+        }
+
+        public Mutate withLastSubmissionTimestamp(Instant lastSubmissionTimestamp) {
+            this.lastSubmissionTimestamp = lastSubmissionTimestamp;
+            return this;
+        }
+
+        public Mutate withIsGameOver(boolean isGameOver) {
+            this.isGameOver = isGameOver;
+            return this;
+        }
+
+        public GameSession build() {
+            return new GameSession(this.id, this.guess, this.answer, this.state, this.guesses, this.error, this.start, this.lastSubmissionTimestamp, this.isGameOver);
+        }
     }
 }

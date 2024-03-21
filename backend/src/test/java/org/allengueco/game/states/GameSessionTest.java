@@ -66,9 +66,9 @@ class GameSessionTest {
             s.setStart(Instant.EPOCH);
             s.setLastSubmissionTimestamp(Instant.MAX);
 
-            Guesses g = new Guesses();
-            g.setAfter(TreeSortedSet.newSetWith("base", "case"));
-            g.setBefore(TreeSortedSet.newSetWith("mandarin", "power"));
+            Guesses g = new Guesses(
+                    TreeSortedSet.newSetWith("mandarin", "power"),
+                    TreeSortedSet.newSetWith("base", "case"));
             s.setGuesses(g);
 
             asJson = jackson.write(s);

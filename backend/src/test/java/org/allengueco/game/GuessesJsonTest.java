@@ -39,9 +39,7 @@ class GuessesJsonTest {
 
     @Test
     void serializeContainsGuesses() throws IOException {
-        Guesses g = new Guesses();
-
-        g.setBefore(Set.of("base"));
+        Guesses g = new Guesses(Set.of("base"), Set.of());
 
         JsonContent<Guesses> content = json.write(g);
 
@@ -64,11 +62,11 @@ class GuessesJsonTest {
                 .hasNoNullFieldsOrProperties();
 
         assertThat(content)
-                .extracting(Guesses::getBefore, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::before, as(InstanceOfAssertFactories.LIST))
                 .isEmpty();
 
         assertThat(content)
-                .extracting(Guesses::getAfter, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::after, as(InstanceOfAssertFactories.LIST))
                 .isEmpty();
     }
 
@@ -87,11 +85,11 @@ class GuessesJsonTest {
                 .hasNoNullFieldsOrProperties();
 
         assertThat(content)
-                .extracting(Guesses::getAfter, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::after, as(InstanceOfAssertFactories.LIST))
                 .containsExactlyElementsOf(List.of("apple", "boy"));
 
         assertThat(content)
-                .extracting(Guesses::getBefore, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::before, as(InstanceOfAssertFactories.LIST))
                 .containsExactlyElementsOf(List.of("mandarin", "power"));
     }
 }

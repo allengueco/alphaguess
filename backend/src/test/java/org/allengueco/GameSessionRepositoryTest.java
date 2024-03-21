@@ -39,9 +39,9 @@ public class GameSessionRepositoryTest {
         s.setStart(Instant.EPOCH);
         s.setLastSubmissionTimestamp(Instant.MAX);
 
-        Guesses g = new Guesses();
-        g.setAfter(TreeSortedSet.newSetWith("base", "case"));
-        g.setBefore(TreeSortedSet.newSetWith("mandarin", "power"));
+        Guesses g = new Guesses(
+                TreeSortedSet.newSetWith("mandarin", "power"),
+                TreeSortedSet.newSetWith("base", "case"));
         s.setGuesses(g);
 
         repository.save(s);
@@ -56,7 +56,7 @@ public class GameSessionRepositoryTest {
         assertThat(retrieved)
                 .get()
                 .extracting(GameSession::getGuesses)
-                .extracting(Guesses::getBefore)
+                .extracting(Guesses::before)
                 .asList()
                 .containsExactlyElementsOf(List.of("mandarin", "power"));
     }

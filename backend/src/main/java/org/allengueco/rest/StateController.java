@@ -1,8 +1,9 @@
 package org.allengueco.rest;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.servlet.http.HttpSession;
-import org.allengueco.dto.ActionResult;
 import org.allengueco.dto.SubmitRequest;
+import org.allengueco.game.states.GameSession;
 import org.allengueco.service.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,12 @@ public class StateController {
     @Autowired
     GameService gameService;
 
+    @JsonView(GameSession.Summary.class)
     @PostMapping(path = "/submit",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ActionResult> submitGuess(
+    public ResponseEntity<GameSession> submitGuess(
             HttpSession session,
             @RequestBody(required = false) SubmitRequest request) {
         String guess = request == null ? null : request.guess();

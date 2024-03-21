@@ -1,8 +1,8 @@
 package org.allengueco.game.states;
 
-import org.allengueco.dto.ActionResult;
 import org.allengueco.game.Guesses;
 import org.allengueco.game.WordSelector;
+import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,18 +20,15 @@ public class InitializeGameState implements State {
     }
 
     @Override
-    public ActionResult updateSession(GameSession session) {
-        ActionResult res = ActionResult.defaultResult(session);
+    public GameSession updateSession(GameSession session) {
         String selectedWord = wordSelector.randomWord();
         log.info("selected answer: {}", selectedWord);
-
-        session.setAnswer(selectedWord);
-        session.setGuesses(Guesses.empty());
-        session.setStart(Instant.now());
-
-        log.info("INITIALIZED");
-
-        session.setState(GameSession.State.Submit);
-        return res;
+        return session
+                .mutate()
+                .withAnswer(selectedWord)
+                .withGuesses(new Guesses(TreeSortedSet.newSet(), TreeSortedSet.newSet()))
+                .withStart(Instant.now())
+                .withState(GameSession.State.Submit)
+                .build();
     }
 }

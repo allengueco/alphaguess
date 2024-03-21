@@ -1,81 +1,47 @@
 package org.allengueco.game;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.allengueco.GuessesSerializer;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
-public class Guesses implements Serializable {
-    private Set<String> before = TreeSortedSet.newSet(String.CASE_INSENSITIVE_ORDER);
-
-    private Set<String> after = TreeSortedSet.newSet(String.CASE_INSENSITIVE_ORDER);
-
-    public Guesses() {
-
-    }
-
+@JsonSerialize(using = GuessesSerializer.class)
+public record Guesses(Set<String> before, Set<String> after) {
     public static Guesses empty() {
-        return new Guesses();
+        return new Guesses(TreeSortedSet.newSet(), TreeSortedSet.newSet());
     }
 
-    @Override
-    public String toString() {
-        return "Guesses{" + "before=" + before + ", after=" + after + '}';
+    public Mutate mutate() {
+        return new Mutate(this);
     }
 
-    /**
-     * Adds guess to either before or after guesses, according to the {@link String#CASE_INSENSITIVE_ORDER}.
-     *
-     * @param answer answer to the game
-     * @param guess  user's guess
-     * @return
-     * @throws IllegalStateException if guess and answer are equal according to this.comparator.
-     */
-    public Result addGuess(String answer, String guess) throws IllegalStateException {
-        int result = String.CASE_INSENSITIVE_ORDER.compare(answer, guess);
-        if (result == 0) {
-            return Result.EQUAL;
+    public static class Mutate {
+        Set<String> before;
+        Set<String> after;
+
+        public Mutate(Set<String> before, Set<String> after) {
+            this.before = before;
+            this.after = after;
         }
 
-        Set<String> half = result > 0 ? after : before;
-        boolean added = half.add(guess);
-        return added ? Result.ADDED : Result.ALREADY_GUESSED;
-    }
+        public Mutate(Guesses guesses) {
+            this(guesses.before, guesses.after);
+        }
 
-    public List<String> getBefore() {
-        return this.before.stream().toList();
-    }
 
-    public void setBefore(Set<String> before) {
-        this.before = before;
-    }
+        public Mutate withBefore(Set<String> before) {
+            this.before = before;
+            return this;
+        }
 
-    public List<String> getAfter() {
-        return this.after.stream().toList();
-    }
+        public Mutate withAfter(Set<String> after) {
+            this.after = after;
+            return this;
+        }
 
-    public void setAfter(Set<String> after) {
-        this.after = after;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Guesses guesses = (Guesses) o;
-        return Objects.equals(getBefore(), guesses.getBefore()) && Objects.equals(getAfter(), guesses.getAfter());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getBefore(), getAfter());
-    }
-
-    public enum Result {
-        EQUAL,
-        ALREADY_GUESSED,
-        ADDED
+        public Guesses build() {
+            return new Guesses(before, after);
+        }
     }
 }
