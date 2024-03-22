@@ -2,6 +2,7 @@ package org.allengueco.service;
 
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.GameSession;
+import org.allengueco.game.SubmitError;
 import org.allengueco.game.WordSelector;
 import org.allengueco.game.states.GameStateHandler;
 import org.allengueco.repository.GameRepository;
@@ -47,7 +48,7 @@ public class GameService {
             gameRepository.save(result);
             return Optional.of(result);
         } else {
-            return Optional.empty();
+            return Optional.of(session.mutate().withError(SubmitError.INVALID_WORD).build());
         }
     }
 

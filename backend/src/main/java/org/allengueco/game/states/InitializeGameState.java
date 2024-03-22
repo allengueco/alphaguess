@@ -32,6 +32,7 @@ public class InitializeGameState implements State {
                 .withStart(Instant.now())
                 .withState(GameSession.State.Submit)
                 .withError(SubmitError.NONE)
+                .withIsGameOver(false)
                 .build();
     }
 }
