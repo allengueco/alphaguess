@@ -7,25 +7,24 @@ import org.allengueco.game.states.GameStateHandler;
 import org.allengueco.repository.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class GameService {
+    final GameRepository gameRepository;
+    final Dictionary dictionary;
+    final WordSelector wordSelector;
+    final GameStateHandler stateHandler;
     private final Logger log = LoggerFactory.getLogger(GameService.class);
-    @Autowired
-    GameRepository gameRepository;
 
-    @Autowired
-    Dictionary dictionary;
-
-    @Autowired
-    WordSelector wordSelector;
-
-    @Autowired
-    GameStateHandler stateHandler;
+    public GameService(GameRepository gameRepository, Dictionary dictionary, WordSelector wordSelector, GameStateHandler stateHandler) {
+        this.gameRepository = gameRepository;
+        this.dictionary = dictionary;
+        this.wordSelector = wordSelector;
+        this.stateHandler = stateHandler;
+    }
 
     /**
      * Facade for our game service. Adds guess to an existing session if it exists.

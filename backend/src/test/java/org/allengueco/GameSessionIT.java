@@ -5,7 +5,6 @@ import jakarta.servlet.http.Cookie;
 import org.allengueco.dto.SubmitRequest;
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.WordSelector;
-import org.allengueco.repository.GameRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -47,9 +46,6 @@ public class GameSessionIT {
 
     @Autowired
     WordSelector wordSelector;
-
-    @Autowired
-    GameRepository gameRepository;
 
     @Test
     void whenNoGuessAndNoActiveSession_thenShouldReturnEmptyActionResult() throws Exception {

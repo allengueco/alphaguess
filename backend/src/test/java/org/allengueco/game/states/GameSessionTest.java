@@ -23,6 +23,7 @@ import org.springframework.boot.test.json.ObjectContent;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,25 +36,15 @@ class GameSessionTest {
     JacksonTester<GameSession> jackson;
 
     private static Stream<Arguments> simpleFields() {
-        return Stream.concat(valueFields(), timestamps());
+        return Stream.of(stringFields(), timestamps()).flatMap(Function.identity());
     }
 
-    private static Stream<Arguments> valueFields() {
+    private static Stream<Arguments> stringFields() {
         return Stream.of(
                 Arguments.of("id", "1"),
                 Arguments.of("answer", "answer"),
                 Arguments.of("guess", "guess")
         );
-    }
-
-    private static Stream<Arguments> enums() {
-        return Stream.of(
-                Arguments.of("error", SubmitError.NONE)
-        );
-    }
-
-    private static Stream<Arguments> booleans() {
-        return Stream.of(Arguments.of("isGameOver", false));
     }
 
     private static Stream<Arguments> timestamps() {
@@ -64,33 +55,47 @@ class GameSessionTest {
 
     @Nested
     public class Serialization {
+        Guesses g = new Guesses(
+                TreeSortedSet.newSetWith("mandarin", "power"),
+                TreeSortedSet.newSetWith("base", "case"));
+        GameSession s = new GameSession("1",
+                "answer",
+                "guess",
+                GameSession.State.Submit,
+                g,
+                SubmitError.NONE,
+                Instant.EPOCH,
+                Instant.MAX,
+                false);
         JsonContent<GameSession> asJson;
-
+        JsonContent<GameSession> asSummaryJson;
 
         @BeforeEach
         void setup() throws IOException {
-            Guesses g = new Guesses(
-                    TreeSortedSet.newSetWith("mandarin", "power"),
-                    TreeSortedSet.newSetWith("base", "case"));
-            GameSession s = new GameSession("1",
-                    "answer",
-                    "guess",
-                    GameSession.State.Submit,
-                    g,
-                    SubmitError.NONE,
-                    Instant.EPOCH,
-                    Instant.MAX,
-                    false);
-
             asJson = jackson.write(s);
+            asSummaryJson = jackson.forView(GameSession.Summary.class).write(s);
         }
 
         @ParameterizedTest
         @MethodSource("org.allengueco.game.states.GameSessionTest#simpleFields")
-        void valueFieldsAreDefined(String property, String value) {
+        void stringFieldsAreSerialized(String property, String value) {
             assertThat(asJson)
                     .extractingJsonPathStringValue(property)
                     .isEqualToIgnoringCase(value);
+        }
+
+        @Test
+        void booleanFieldsAreSerialized() {
+            assertThat(asJson)
+                    .extractingJsonPathBooleanValue("isGameOver")
+                    .isEqualTo(false);
+        }
+
+        @Test
+        void enumFieldsAreSerialized() {
+            assertThat(asJson)
+                    .extractingJsonPathStringValue("error")
+                    .isEqualTo("NONE");
         }
 
         @Test
@@ -102,34 +107,48 @@ class GameSessionTest {
                     .extractingJsonPathArrayValue("$.guesses.after")
                     .containsExactlyElementsOf(List.of("base", "case"));
         }
+
+        @Test
+        void withSummaryView() {
+            assertThat(asSummaryJson)
+                    .hasJsonPath("$.guesses")
+                    .hasJsonPath("$.error")
+                    .hasJsonPath("$.lastSubmissionTimestamp")
+                    .hasJsonPath("$.isGameOver")
+                    .doesNotHaveJsonPath("$.id")
+                    .doesNotHaveJsonPath("$.answer")
+                    .doesNotHaveJsonPath("$.guess")
+                    .doesNotHaveJsonPath("$.state")
+                    .doesNotHaveJsonPath("$.start");
+        }
     }
 
     @Nested
     public class Deserialization {
         ObjectContent<GameSession> content;
+        ObjectContent<GameSession> asSummaryContent;
 
-        String json;
-
+        String json = """
+                {
+                    "id" : "1",
+                    "answer": "answer",
+                    "guess": "guess",
+                    "state": "Submit",
+                    "start": "1970-01-01T00:00:00Z",
+                    "lastSubmissionTimestamp": "+1000000000-12-31T23:59:59.999999999Z",
+                    "guesses": {
+                        "before": ["base", "case"],
+                        "after": ["mandarin", "power"]
+                    },
+                    "error": "NONE",
+                    "isGameOver": false
+                }
+                """;
 
         @BeforeEach
         void setup() throws IOException {
-            json = """
-                    {
-                        "id" : "1",
-                        "answer": "answer",
-                        "guess": "guess",
-                        "state": "Submit",
-                        "start": "1970-01-01T00:00:00Z",
-                        "lastSubmissionTimestamp": "+1000000000-12-31T23:59:59.999999999Z",
-                        "guesses": {
-                            "before": ["base", "case"],
-                            "after": ["mandarin", "power"]
-                        },
-                        "error": "NONE",
-                        "isGameOver": false
-                    }
-                    """;
             content = jackson.parse(json);
+            asSummaryContent = jackson.forView(GameSession.Summary.class).parse(json);
         }
 
         @Test
@@ -139,8 +158,8 @@ class GameSessionTest {
         }
 
         @ParameterizedTest
-        @MethodSource("org.allengueco.game.states.GameSessionTest#valueFields")
-        void valueFieldEquals(String property, String value) {
+        @MethodSource("org.allengueco.game.states.GameSessionTest#stringFields")
+        void stringFieldsAreDeserialized(String property, String value) {
             assertThat(content)
                     .extracting(property).isEqualTo(value);
         }
@@ -152,6 +171,12 @@ class GameSessionTest {
                     .extracting(property)
                     .asInstanceOf(InstanceOfAssertFactories.INSTANT)
                     .isEqualTo(value);
+        }
+
+        @Test
+        void withSummaryView() {
+            assertThat(asSummaryContent)
+                    .hasAllNullFieldsOrPropertiesExcept("guesses", "error", "lastSubmissionTimestamp", "isGameOver");
         }
     }
 }

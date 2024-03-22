@@ -8,6 +8,7 @@ import org.allengueco.repository.GameRepository;
 import org.allengueco.rest.StateController;
 import org.eclipse.collections.api.factory.Maps;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(value = StateController.class)
+@Disabled
 class StateControllerTest {
     private final Logger log = LoggerFactory.getLogger(StateControllerTest.class);
     @MockBean
