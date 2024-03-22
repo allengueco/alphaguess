@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -26,7 +25,7 @@ class GuessesJsonTest {
 
     @Test
     void serializeGuesses() throws IOException {
-        Guesses g = new Guesses();
+        Guesses g = new Guesses(Set.of(), Set.of());
 
         JsonContent<Guesses> content = json.write(g);
 
@@ -62,11 +61,13 @@ class GuessesJsonTest {
                 .hasNoNullFieldsOrProperties();
 
         assertThat(content)
-                .extracting(Guesses::before, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::before)
+                .asInstanceOf(InstanceOfAssertFactories.iterable(String.class))
                 .isEmpty();
 
         assertThat(content)
-                .extracting(Guesses::after, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::after)
+                .asInstanceOf(InstanceOfAssertFactories.iterable(String.class))
                 .isEmpty();
     }
 
@@ -85,11 +86,13 @@ class GuessesJsonTest {
                 .hasNoNullFieldsOrProperties();
 
         assertThat(content)
-                .extracting(Guesses::after, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::after)
+                .asInstanceOf(InstanceOfAssertFactories.iterable(String.class))
                 .containsExactlyElementsOf(List.of("apple", "boy"));
 
         assertThat(content)
-                .extracting(Guesses::before, as(InstanceOfAssertFactories.LIST))
+                .extracting(Guesses::before)
+                .asInstanceOf(InstanceOfAssertFactories.iterable(String.class))
                 .containsExactlyElementsOf(List.of("mandarin", "power"));
     }
 }

@@ -3,7 +3,7 @@ package org.allengueco.rest;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.servlet.http.HttpSession;
 import org.allengueco.dto.SubmitRequest;
-import org.allengueco.game.states.GameSession;
+import org.allengueco.game.GameSession;
 import org.allengueco.service.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

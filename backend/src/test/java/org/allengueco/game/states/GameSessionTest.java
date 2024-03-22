@@ -1,6 +1,8 @@
 package org.allengueco.game.states;
 
+import org.allengueco.game.GameSession;
 import org.allengueco.game.Guesses;
+import org.allengueco.game.SubmitError;
 import org.allengueco.service.GameService;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
@@ -42,7 +44,16 @@ class GameSessionTest {
                 Arguments.of("answer", "answer"),
                 Arguments.of("guess", "guess")
         );
+    }
 
+    private static Stream<Arguments> enums() {
+        return Stream.of(
+                Arguments.of("error", SubmitError.NONE)
+        );
+    }
+
+    private static Stream<Arguments> booleans() {
+        return Stream.of(Arguments.of("isGameOver", false));
     }
 
     private static Stream<Arguments> timestamps() {
@@ -58,18 +69,18 @@ class GameSessionTest {
 
         @BeforeEach
         void setup() throws IOException {
-            GameSession s = GameSession.withId("1");
-
-            s.setState(GameSession.State.Submit);
-            s.setAnswer("answer");
-            s.setGuess("guess");
-            s.setStart(Instant.EPOCH);
-            s.setLastSubmissionTimestamp(Instant.MAX);
-
             Guesses g = new Guesses(
                     TreeSortedSet.newSetWith("mandarin", "power"),
                     TreeSortedSet.newSetWith("base", "case"));
-            s.setGuesses(g);
+            GameSession s = new GameSession("1",
+                    "answer",
+                    "guess",
+                    GameSession.State.Submit,
+                    g,
+                    SubmitError.NONE,
+                    Instant.EPOCH,
+                    Instant.MAX,
+                    false);
 
             asJson = jackson.write(s);
         }
@@ -113,7 +124,9 @@ class GameSessionTest {
                         "guesses": {
                             "before": ["base", "case"],
                             "after": ["mandarin", "power"]
-                        }
+                        },
+                        "error": "NONE",
+                        "isGameOver": false
                     }
                     """;
             content = jackson.parse(json);

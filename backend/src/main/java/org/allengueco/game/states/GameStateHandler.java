@@ -1,5 +1,6 @@
 package org.allengueco.game.states;
 
+import org.allengueco.game.GameSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

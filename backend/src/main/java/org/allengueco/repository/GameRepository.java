@@ -1,6 +1,6 @@
 package org.allengueco.repository;
 
-import org.allengueco.game.states.GameSession;
+import org.allengueco.game.GameSession;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

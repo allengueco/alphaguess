@@ -61,8 +61,8 @@ public class GameSessionIT {
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.before", Matchers.empty()),
                         jsonPath("$.guesses.after", Matchers.empty()),
-                        jsonPath("$.error", Matchers.nullValue()),
-                        jsonPath("$.gameOver", Matchers.is(false)),
+                        jsonPath("$.error", Matchers.is("NONE")),
+                        jsonPath("$.isGameOver", Matchers.is(false)),
                         jsonPath("$.lastSubmissionTimestamp", Matchers.nullValue())
                 );
     }
@@ -87,8 +87,8 @@ public class GameSessionIT {
         var s = testRequest(new SubmitRequest("port"), sessionCookie)
                 .andDo(print())
                 .andExpectAll(
-                        jsonPath("$.gameOver", Matchers.is(false)),
-                        jsonPath("$.error", Matchers.nullValue()),
+                        jsonPath("$.isGameOver", Matchers.is(false)),
+                        jsonPath("$.error", Matchers.is("NONE")),
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.after", Matchers.empty()),
                         jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great", "port")),
@@ -115,8 +115,8 @@ public class GameSessionIT {
 
         testRequest(null, sessionCookie)
                 .andExpectAll(
-                        jsonPath("$.gameOver", Matchers.is(false)),
-                        jsonPath("$.error", Matchers.nullValue()),
+                        jsonPath("$.isGameOver", Matchers.is(false)),
+                        jsonPath("$.error", Matchers.is("NONE")),
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.after", Matchers.empty()),
                         jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great")),

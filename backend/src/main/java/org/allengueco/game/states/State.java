@@ -1,5 +1,7 @@
 package org.allengueco.game.states;
 
+import org.allengueco.game.GameSession;
+
 @FunctionalInterface
 public interface State {
     /**

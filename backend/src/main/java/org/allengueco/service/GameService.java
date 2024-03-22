@@ -1,8 +1,8 @@
 package org.allengueco.service;
 
 import org.allengueco.game.Dictionary;
+import org.allengueco.game.GameSession;
 import org.allengueco.game.WordSelector;
-import org.allengueco.game.states.GameSession;
 import org.allengueco.game.states.GameStateHandler;
 import org.allengueco.repository.GameRepository;
 import org.slf4j.Logger;

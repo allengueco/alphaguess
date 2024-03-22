@@ -1,6 +1,8 @@
 package org.allengueco.game.states;
 
+import org.allengueco.game.GameSession;
 import org.allengueco.game.Guesses;
+import org.allengueco.game.SubmitError;
 import org.allengueco.game.WordSelector;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ public class InitializeGameState implements State {
                 .withGuesses(new Guesses(TreeSortedSet.newSet(), TreeSortedSet.newSet()))
                 .withStart(Instant.now())
                 .withState(GameSession.State.Submit)
+                .withError(SubmitError.NONE)
                 .build();
     }
 }

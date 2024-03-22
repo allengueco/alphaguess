@@ -1,9 +1,11 @@
 package org.allengueco;
 
 import com.redis.testcontainers.RedisContainer;
+import org.allengueco.game.GameSession;
 import org.allengueco.game.Guesses;
-import org.allengueco.game.states.GameSession;
+import org.allengueco.game.SubmitError;
 import org.allengueco.repository.GameRepository;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,18 +33,18 @@ public class GameSessionRepositoryTest {
 
     @Test
     void save() {
-        GameSession s = GameSession.withId("1");
-
-        s.setState(GameSession.State.Submit);
-        s.setAnswer("answer");
-        s.setGuess("guess");
-        s.setStart(Instant.EPOCH);
-        s.setLastSubmissionTimestamp(Instant.MAX);
-
         Guesses g = new Guesses(
                 TreeSortedSet.newSetWith("mandarin", "power"),
                 TreeSortedSet.newSetWith("base", "case"));
-        s.setGuesses(g);
+        GameSession s = new GameSession("1",
+                "answer",
+                "guess",
+                GameSession.State.Submit,
+                g,
+                SubmitError.NONE,
+                Instant.EPOCH,
+                Instant.MAX,
+                false);
 
         repository.save(s);
 
@@ -50,28 +52,31 @@ public class GameSessionRepositoryTest {
         assertThat(retrieved)
                 .get()
                 .hasNoNullFieldsOrProperties()
-                .extracting(GameSession::getGuesses)
+                .extracting(GameSession::guesses)
                 .isNotNull();
 
         assertThat(retrieved)
                 .get()
-                .extracting(GameSession::getGuesses)
+                .extracting(GameSession::guesses)
                 .extracting(Guesses::before)
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.iterable(String.class))
                 .containsExactlyElementsOf(List.of("mandarin", "power"));
     }
 
     @Test
     void saveEmptyGuess() {
-        GameSession s = GameSession.withId("1");
-
-        s.setState(GameSession.State.Submit);
-        s.setAnswer("answer");
-        s.setGuess("guess");
-        s.setStart(Instant.EPOCH);
-        s.setLastSubmissionTimestamp(Instant.MAX);
-
-        s.setGuesses(Guesses.empty());
+        Guesses g = new Guesses(
+                TreeSortedSet.newSetWith("boy"),
+                TreeSortedSet.newSetWith());
+        GameSession s = new GameSession("1",
+                "answer",
+                "guess",
+                GameSession.State.Submit,
+                g,
+                SubmitError.NONE,
+                Instant.EPOCH,
+                Instant.MAX,
+                false);
 
         repository.save(s);
         var retrieved = repository.findById("1");
@@ -79,7 +84,7 @@ public class GameSessionRepositoryTest {
         assertThat(retrieved)
                 .get()
                 .hasNoNullFieldsOrProperties()
-                .extracting(GameSession::getGuesses)
+                .extracting(GameSession::guesses)
                 .isNotNull();
     }
 }

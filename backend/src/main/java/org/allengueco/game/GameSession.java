@@ -1,8 +1,6 @@
-package org.allengueco.game.states;
+package org.allengueco.game;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import org.allengueco.game.Guesses;
-import org.allengueco.game.SubmitError;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -46,7 +44,7 @@ public record GameSession(@Id String id,
     }
 
     /**
-     * Not really modify since I want to keep {@link GameSession} immutable. I copy over the fields and make changes
+     * Not really mutate since I want to keep {@link GameSession} immutable. I copy over the fields and make changes
      */
     public static class Mutate {
         String id;
@@ -121,7 +119,7 @@ public record GameSession(@Id String id,
         }
 
         public GameSession build() {
-            return new GameSession(this.id, this.guess, this.answer, this.state, this.guesses, this.error, this.start, this.lastSubmissionTimestamp, this.isGameOver);
+            return new GameSession(this.id, this.answer, this.guess, this.state, this.guesses, this.error, this.start, this.lastSubmissionTimestamp, this.isGameOver);
         }
     }
 }
