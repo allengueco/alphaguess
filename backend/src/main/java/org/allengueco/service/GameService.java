@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -39,16 +40,23 @@ public class GameService {
     public Optional<GameSession> addGuess(String id, String guess) {
         GameSession session = gameRepository
                 .findById(id).orElseGet(() -> newGameSession(id));
+        if (guess == null || guess.isEmpty() || guess.isBlank()) {
+            log.info("[guess] is empty. Returning current session state...");
+            return Optional.of(session);
+        }
 
-        if (guess == null || dictionary.contains(guess)) {
+        String normalized = normalized(guess);
+        if (dictionary.contains(normalized)) {
             GameSession withGuess = session.mutate()
-                    .withGuess(guess)
+                    .withGuess(normalized)
                     .build();
             GameSession result = stateHandler.handle(withGuess);
             gameRepository.save(result);
             return Optional.of(result);
         } else {
-            return Optional.of(session.mutate().withError(SubmitError.INVALID_WORD).build());
+            return Optional.of(session.mutate()
+                    .withError(SubmitError.INVALID_WORD)
+                    .build());
         }
     }
 
@@ -64,5 +72,9 @@ public class GameService {
                 null,
                 false);
         return stateHandler.handle(newSession);
+    }
+
+    String normalized(String s) {
+        return s.strip().toLowerCase(Locale.ROOT);
     }
 }

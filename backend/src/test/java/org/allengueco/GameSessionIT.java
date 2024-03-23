@@ -6,6 +6,7 @@ import org.allengueco.dto.SubmitRequest;
 import org.allengueco.game.Dictionary;
 import org.allengueco.game.WordSelector;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class GameSessionIT {
                 .split(";")[0]
                 .split("=")[1];
 
-        var s = testRequest(new SubmitRequest("port"), sessionCookie)
+        testRequest(new SubmitRequest("port"), sessionCookie)
                 .andDo(print())
                 .andExpectAll(
                         jsonPath("$.isGameOver", Matchers.is(false)),
@@ -120,7 +121,6 @@ public class GameSessionIT {
                 );
     }
 
-
     @Test
     void whenInitiatingFirstGuess_thenShouldAssignCookie() throws Exception {
         when(dictionary.contains("guess")).thenReturn(true);
@@ -133,6 +133,26 @@ public class GameSessionIT {
                 .andReturn();
     }
 
+    @Test
+    void whenUserGuessesCorrectly_thenShouldSetGameOver() throws Exception {
+        when(dictionary.contains(anyString())).thenReturn(true);
+        when(wordSelector.randomWord()).thenReturn("answer");
+
+        // starts the game
+        var initRequest = testRequest(null, null)
+                .andExpect(status().isOk())
+                .andExpect(header().exists("Set-Cookie"))
+                .andReturn();
+
+        var sessionCookie = initRequest
+                .getResponse()
+                .getHeader("Set-Cookie")
+                .split(";")[0]
+                .split("=")[1];
+
+        testRequest(new SubmitRequest("answer"), sessionCookie)
+                .andExpect(jsonPath("$.isGameOver", Matchers.is(true)));
+    }
 
     private ResultActions testRequest(SubmitRequest request, String sessionCookie) throws Exception {
         var postRequest = post(SUBMIT_API);
@@ -153,5 +173,62 @@ public class GameSessionIT {
 
         @MockBean
         WordSelector wordSelector;
+    }
+
+    @Nested
+    public class Session {
+        @Test
+        void whenSessionHasNoInvalidGuesses() throws Exception {
+            final String ANSWER = "fire";
+            when(dictionary.contains(anyString())).thenReturn(true);
+            when(wordSelector.randomWord()).thenReturn(ANSWER);
+            final String[] GUESSES = {
+                    "traffic",
+                    "balloon",
+                    "kernel",
+                    "great",
+                    "dwarf",
+                    "early",
+                    "fate",
+                    "fire"
+            };
+
+            final String[] AFTER = {
+                    "balloon",
+                    "dwarf",
+                    "early",
+                    "fate"
+            };
+            final String[] BEFORE = {
+                    "great",
+                    "kernel",
+                    "traffic"
+            };
+
+            // starts the game
+            var initRequest = testRequest(null, null)
+                    .andExpect(status().isOk())
+                    .andExpect(header().exists("Set-Cookie"))
+                    .andReturn();
+
+            var sessionCookie = initRequest
+                    .getResponse()
+                    .getHeader("Set-Cookie")
+                    .split(";")[0]
+                    .split("=")[1];
+
+            ResultActions result = null;
+            for (String g : GUESSES) {
+                result = testRequest(new SubmitRequest(g), sessionCookie);
+            }
+
+            result.andExpectAll(
+                    jsonPath("$.isGameOver", Matchers.is(true)),
+                    jsonPath("$.error", Matchers.is("NONE")),
+                    jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue()),
+                    jsonPath("$.guesses.after", Matchers.contains(AFTER)),
+                    jsonPath("$.guesses.before", Matchers.contains(BEFORE))
+            );
+        }
     }
 }

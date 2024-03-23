@@ -21,11 +21,6 @@ public class SubmitGuessState implements State {
         Instant now = Instant.now();
         String guess = session.guess();
 
-        if (guess == null || guess.isEmpty() || guess.isBlank()) {
-            log.info("[guess] is empty. Returning current session state...");
-            return session;
-        }
-
         GameSession.Mutate mutate = session.mutate();
 
         log.info("GUESSING: {}", session.guess());
@@ -34,7 +29,8 @@ public class SubmitGuessState implements State {
         switch (res.error) {
             case EQUAL -> mutate
                     .withLastSubmissionTimestamp(now)
-                    .withState(GameSession.State.Complete);
+                    .withState(GameSession.State.Complete)
+                    .withIsGameOver(true);
             case ALREADY_GUESSED -> {
                 log.warn("Already guessed: {}", guess);
                 mutate.withError(SubmitError.ALREADY_GUESSED);
