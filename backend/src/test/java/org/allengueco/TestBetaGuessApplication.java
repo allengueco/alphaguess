@@ -1,7 +1,5 @@
-package org.allengueco.game;
+package org.allengueco;
 
-import org.allengueco.BetaGuessApplication;
-import org.allengueco.ContainersConfig;
 import org.springframework.boot.SpringApplication;
 
 public class TestBetaGuessApplication {
