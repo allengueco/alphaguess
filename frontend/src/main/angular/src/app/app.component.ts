@@ -42,16 +42,13 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.submitResult = this.betaGuessService.submit()
-      .pipe(map(s => ({...s, ...this.highlight})))
+      .pipe(map(s => ({...s, ...this.updateWordHints(s)})))
   }
 
   onSubmit() {
     const guess = this.form.controls.guess.value
     this.submitResult = this.betaGuessService.submit(guess)
-      .pipe(map(s => {
-        const highlight = this.updateWordHints(s);
-        return {...s, ...highlight}
-      }));
+      .pipe(map(s => ({...s, ...this.updateWordHints(s)})));
     this.form.reset();
   }
 
@@ -71,6 +68,8 @@ export class AppComponent implements OnInit {
       if (top.charAt(i) === bottom.charAt(i)) {
         letters += top.charAt(i);
         idx++
+      } else {
+        break
       }
     }
 

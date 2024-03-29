@@ -1,9 +1,9 @@
 <div class="h-screen w-screen flex flex-col items-center">
 
-  <h1 class="text-black font-medium text-3xl pt-48 pb-20">{{ title }}</h1>
+  <h1 class="text-black font-medium text-6xl pt-48 pb-20">{{ title }}</h1>
   @if (submitResult | async; as result) {
-    <div class="pb-5">
-      <h1 class="text-lg">Words After:</h1>
+    <h1 class="text-4xl">Words After:</h1>
+    <div class="pb-5 text-3xl">
       @for (g of result.guesses.after; track $index) {
         @if ($last) {
           <h2>
@@ -37,7 +37,7 @@
     @if (result.isGameOver) {
       <h1 class="text-7xl">SLAY QUEEN</h1>
     }
-    <div class="pt-5">
+    <div class="pt-5 text-3xl">
       @for (g of result.guesses.before; track $index) {
         @if ($first) {
           <h2>
@@ -48,7 +48,7 @@
           <h2>{{ g }}</h2>
         }
       }
-      <h1 class="text-lg">Words Before:</h1>
     </div>
+    <h1 class="text-4xl">Words Before:</h1>
   }
 </div>
