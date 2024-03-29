@@ -12,14 +12,12 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.shell.command.annotation.EnableCommand;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
 
 @EnableCommand(Submit.class)
 @ConditionalOnProperty(value = "cli")
@@ -28,20 +26,15 @@ public class CliConfig {
     private static final Logger log = LoggerFactory.getLogger(CliConfig.class);
 
     @Bean
-    BetaGuessClient betaGuessClient(RestClient restClient) {
+    BetaGuessClient betaGuessClient(ClientHttpRequestInterceptor interceptor) {
         return HttpServiceProxyFactory
-                .builderFor(RestClientAdapter.create(restClient))
+                .builderFor(RestClientAdapter
+                        .create(RestClient.builder()
+                                .baseUrl("http://localhost:8080")
+                                .requestInterceptor(interceptor)
+                                .build()))
                 .build()
                 .createClient(BetaGuessClient.class);
-    }
-
-    @Bean
-    RestClient restClient(ClientHttpRequestInterceptor interceptor) {
-        return RestClient.builder()
-                .baseUrl("http://localhost:8080")
-                .requestFactory(new JdkClientHttpRequestFactory(HttpClient.newBuilder().build()))
-                .requestInterceptor(interceptor)
-                .build();
     }
 
     @Bean
@@ -60,7 +53,7 @@ public class CliConfig {
             var response = execution.execute(request, body);
 
             if (this.cookie == null) {
-                cookie = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+                cookie = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE).split(";")[0];
             }
 
             return response;
