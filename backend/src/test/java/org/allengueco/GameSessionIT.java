@@ -230,5 +230,60 @@ public class GameSessionIT {
                     jsonPath("$.guesses.before", Matchers.contains(BEFORE))
             );
         }
+
+        @Test
+        void whenUserGuessesOutOfOrder_thenShouldStillPreserveBeforeAndAfterGuesses() throws Exception {
+
+            final String ANSWER = "fire";
+            when(dictionary.contains(anyString())).thenReturn(true);
+            when(wordSelector.randomWord()).thenReturn(ANSWER);
+            final String[] GUESSES = {
+                    "early",
+                    "traffic",
+                    "dwarf",
+                    "kernel",
+                    "fate",
+                    "balloon",
+                    "great",
+                    "fire"
+            };
+
+            final String[] AFTER = {
+                    "balloon",
+                    "dwarf",
+                    "early",
+                    "fate"
+            };
+            final String[] BEFORE = {
+                    "great",
+                    "kernel",
+                    "traffic"
+            };
+
+            // starts the game
+            var initRequest = testRequest(null, null)
+                    .andExpect(status().isOk())
+                    .andExpect(header().exists("Set-Cookie"))
+                    .andReturn();
+
+            var sessionCookie = initRequest
+                    .getResponse()
+                    .getHeader("Set-Cookie")
+                    .split(";")[0]
+                    .split("=")[1];
+
+            ResultActions result = null;
+            for (String g : GUESSES) {
+                result = testRequest(new SubmitRequest(g), sessionCookie);
+            }
+
+            result.andExpectAll(
+                    jsonPath("$.isGameOver", Matchers.is(true)),
+                    jsonPath("$.error", Matchers.is("NONE")),
+                    jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue()),
+                    jsonPath("$.guesses.after", Matchers.contains(AFTER)),
+                    jsonPath("$.guesses.before", Matchers.contains(BEFORE))
+            );
+        }
     }
 }

@@ -18,7 +18,8 @@
         <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
         <eclipse-collections.version>11.1.0</eclipse-collections.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-shell.version>3.2.3</spring-shell.version>
+        <testcontainers-redis-junit-jupiter.version>1.4.6</testcontainers-redis-junit-jupiter.version>
+        <jackson-datatype-eclipse-collections.version>2.17.0</jackson-datatype-eclipse-collections.version>
     </properties>
     <dependencies>
         <dependency>
@@ -28,16 +29,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.shell</groupId>
-            <artifactId>spring-shell-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>it.ozimov</groupId>
-            <artifactId>embedded-redis</artifactId>
-            <version>0.7.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -70,7 +61,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-eclipse-collections</artifactId>
-            <version>2.17.0</version>
+            <version>${jackson-datatype-eclipse-collections.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -85,21 +76,10 @@
         <dependency>
             <groupId>com.redis.testcontainers</groupId>
             <artifactId>testcontainers-redis-junit-jupiter</artifactId>
-            <version>1.4.6</version>
+            <version>${testcontainers-redis-junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.shell</groupId>
-                <artifactId>spring-shell-dependencies</artifactId>
-                <version>${spring-shell.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <build>
         <plugins>
             <plugin>
@@ -115,5 +95,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

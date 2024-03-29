@@ -16,8 +16,8 @@ Assuming there is a running Docker Engine in your machine, run the application l
 mvn spring-boot:test-run -pl backend
 ```
 
-This starts up the Spring Boot Application.
-I configure a local development environment which bootstraps a Redis container through Docker.
+This starts up the Spring Boot Application with a configured local development environment, which bootstraps a Redis
+container through Docker.
 
 ## Usage
 

@@ -1,7 +1,9 @@
 package org.allengueco.config;
 
 import org.allengueco.game.Dictionary;
+import org.allengueco.game.DictionaryImpl;
 import org.allengueco.game.WordSelector;
+import org.allengueco.game.WordSelectorImpl;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +24,14 @@ public class BetaGuessConfig {
     Dictionary englishDictionary(@Value("classpath:dictionary.txt") Resource dictionaryResource) throws IOException {
         var words = TreeSortedSet.newSet(Files.readAllLines(dictionaryResource.getFile().toPath()));
 
-        return new Dictionary(words);
+        return new DictionaryImpl(words);
     }
 
     @Bean
     WordSelector wordSelector(Random random, @Value("classpath:valid_words.txt") Resource wordResource) throws IOException {
         var words = TreeSortedSet.newSet(Files.readAllLines(wordResource.getFile().toPath()));
 
-        return new WordSelector(words, random);
+        return new WordSelectorImpl(words, random);
     }
 
     @Bean

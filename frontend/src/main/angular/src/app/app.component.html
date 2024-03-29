@@ -1,0 +1,54 @@
+<div class="h-screen w-screen flex flex-col items-center">
+
+  <h1 class="text-black font-medium text-3xl pt-48 pb-20">{{ title }}</h1>
+  @if (submitResult | async; as result) {
+    <div class="pb-5">
+      <h1 class="text-lg">Words After:</h1>
+      @for (g of result.guesses.after; track $index) {
+        @if ($last) {
+          <h2>
+            <a
+              class="underline text-emerald-700 decoration-emerald-400">{{ result.letters }}</a>{{ g.substring(result.index) }}
+          </h2>
+        } @else {
+          <h2>{{ g }}</h2>
+        }
+      }
+
+    </div>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-row">
+      <input
+        class="shadow
+        appearance-none
+        border rounded
+        py-2 px-3
+        mr-2
+        text-gray-700 leading-tight
+        focus:outline-none
+        focus:shadow-outline"
+        formControlName="guess"
+        id="username">
+      <button
+        [disabled]="form.errors"
+        class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded">
+        Guess
+      </button>
+    </form>
+    @if (result.isGameOver) {
+      <h1 class="text-7xl">SLAY QUEEN</h1>
+    }
+    <div class="pt-5">
+      @for (g of result.guesses.before; track $index) {
+        @if ($first) {
+          <h2>
+            <a
+              class="underline text-emerald-700 decoration-emerald-400">{{ result.letters }}</a>{{ g.substring(result.index) }}
+          </h2>
+        } @else {
+          <h2>{{ g }}</h2>
+        }
+      }
+      <h1 class="text-lg">Words Before:</h1>
+    </div>
+  }
+</div>
