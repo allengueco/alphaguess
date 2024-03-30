@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {BetaGuessService} from "./beta-guess.service";
-import {AsyncValidatorFn, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {GameSessionSummary} from "./model/SubmitResult.model";
 import {map, Observable, of, share} from 'rxjs';
 
@@ -16,22 +16,14 @@ import {map, Observable, of, share} from 'rxjs';
 })
 export class AppComponent implements OnInit {
   betaGuessService = inject(BetaGuessService);
-  cd = inject(ChangeDetectorRef)
   title = 'betaguess';
   submitResult: Observable<GameSessionSummary & { letters: string, index: number }> = of();
-  errorValidator: AsyncValidatorFn = (_form) => {
-    return this.submitResult.pipe(
-      map(r => ({
-        submitError: r.error
-      })));
-  }
 
   form = new FormGroup(
     {
       guess: new FormControl("", {
         nonNullable: true,
-        validators: [Validators.required],
-        asyncValidators: this.errorValidator
+        validators: [Validators.required]
       })
     });
 
@@ -46,7 +38,7 @@ export class AppComponent implements OnInit {
     const guess = this.form.controls.guess.value
     this.submitResult = this.betaGuessService.submit(guess)
       .pipe(map(s => ({...s, ...this.updateWordHints(s)})));
-    this.form.reset();
+    this.form.controls.guess.reset();
   }
 
   updateWordHints(summary: GameSessionSummary): { letters: string, index: number } {

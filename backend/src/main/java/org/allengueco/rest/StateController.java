@@ -7,7 +7,6 @@ import org.allengueco.game.GameSession;
 import org.allengueco.service.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class StateController {
     private final static Logger log = LoggerFactory.getLogger(StateController.class);
 
-    @Autowired
-    GameService gameService;
+    final GameService gameService;
+
+    public StateController(GameService gameService) {
+        this.gameService = gameService;
+    }
 
     @JsonView(GameSession.Summary.class)
     @PostMapping(path = "/submit",

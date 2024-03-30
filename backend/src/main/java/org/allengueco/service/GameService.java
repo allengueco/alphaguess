@@ -38,12 +38,12 @@ public class GameService {
      * @return modified game session if guess is successful, or empty
      */
     public Optional<GameSession> addGuess(String id, String guess) {
-        if (guess == null || guess.isEmpty() || guess.isBlank()) {
-            log.info("[guess] is empty. Returning current session state if it exists...");
-            return gameRepository.findById(id);
-        }
         GameSession session = gameRepository
                 .findById(id).orElseGet(() -> newGameSession(id));
+        if (guess == null || guess.isEmpty() || guess.isBlank()) {
+            log.info("[guess] is empty. Returning current session state if it exists...");
+            return Optional.of(session);
+        }
 
         String normalized = normalized(guess);
         if (dictionary.contains(normalized)) {
