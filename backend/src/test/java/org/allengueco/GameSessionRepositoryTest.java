@@ -3,7 +3,6 @@ package org.allengueco;
 import com.redis.testcontainers.RedisContainer;
 import org.allengueco.game.GameSession;
 import org.allengueco.game.Guesses;
-import org.allengueco.game.SubmitError;
 import org.allengueco.repository.GameRepository;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
@@ -41,7 +40,7 @@ public class GameSessionRepositoryTest {
                 "guess",
                 GameSession.State.Submit,
                 g,
-                SubmitError.NONE,
+                null,
                 Instant.EPOCH,
                 Instant.MAX,
                 false);
@@ -51,7 +50,7 @@ public class GameSessionRepositoryTest {
         Optional<GameSession> retrieved = repository.findById("1");
         assertThat(retrieved)
                 .get()
-                .hasNoNullFieldsOrProperties()
+                .hasNoNullFieldsOrPropertiesExcept("error")
                 .extracting(GameSession::guesses)
                 .isNotNull();
 
@@ -73,7 +72,7 @@ public class GameSessionRepositoryTest {
                 "guess",
                 GameSession.State.Submit,
                 g,
-                SubmitError.NONE,
+                null,
                 Instant.EPOCH,
                 Instant.MAX,
                 false);
@@ -83,7 +82,7 @@ public class GameSessionRepositoryTest {
 
         assertThat(retrieved)
                 .get()
-                .hasNoNullFieldsOrProperties()
+                .hasNoNullFieldsOrPropertiesExcept("error")
                 .extracting(GameSession::guesses)
                 .isNotNull();
     }

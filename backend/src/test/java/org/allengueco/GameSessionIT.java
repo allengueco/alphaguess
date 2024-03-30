@@ -58,7 +58,7 @@ public class GameSessionIT {
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.before", Matchers.empty()),
                         jsonPath("$.guesses.after", Matchers.empty()),
-                        jsonPath("$.error", Matchers.is("NONE")),
+                        jsonPath("$.error", Matchers.nullValue()),
                         jsonPath("$.isGameOver", Matchers.is(false)),
                         jsonPath("$.lastSubmissionTimestamp", Matchers.nullValue())
                 );
@@ -85,7 +85,7 @@ public class GameSessionIT {
                 .andDo(print())
                 .andExpectAll(
                         jsonPath("$.isGameOver", Matchers.is(false)),
-                        jsonPath("$.error", Matchers.is("NONE")),
+                        jsonPath("$.error", Matchers.nullValue()),
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.after", Matchers.empty()),
                         jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great", "port")),
@@ -113,7 +113,7 @@ public class GameSessionIT {
         testRequest(null, sessionCookie)
                 .andExpectAll(
                         jsonPath("$.isGameOver", Matchers.is(false)),
-                        jsonPath("$.error", Matchers.is("NONE")),
+                        jsonPath("$.error", Matchers.nullValue()),
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.after", Matchers.empty()),
                         jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great")),
@@ -224,7 +224,7 @@ public class GameSessionIT {
 
             result.andExpectAll(
                     jsonPath("$.isGameOver", Matchers.is(true)),
-                    jsonPath("$.error", Matchers.is("NONE")),
+                    jsonPath("$.error", Matchers.nullValue()),
                     jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue()),
                     jsonPath("$.guesses.after", Matchers.contains(AFTER)),
                     jsonPath("$.guesses.before", Matchers.contains(BEFORE))
@@ -279,7 +279,7 @@ public class GameSessionIT {
 
             result.andExpectAll(
                     jsonPath("$.isGameOver", Matchers.is(true)),
-                    jsonPath("$.error", Matchers.is("NONE")),
+                    jsonPath("$.error", Matchers.nullValue()),
                     jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue()),
                     jsonPath("$.guesses.after", Matchers.contains(AFTER)),
                     jsonPath("$.guesses.before", Matchers.contains(BEFORE))

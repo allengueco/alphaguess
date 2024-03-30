@@ -33,7 +33,7 @@ public class SessionConfig {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setCookiePath("/api");
+        serializer.setCookiePath("/api/submit");
         serializer.setCookieMaxAge(3600);
         return serializer;
     }

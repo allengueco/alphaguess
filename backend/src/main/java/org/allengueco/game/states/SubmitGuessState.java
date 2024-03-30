@@ -30,14 +30,14 @@ public class SubmitGuessState implements State {
             case EQUAL -> mutate
                     .withLastSubmissionTimestamp(now)
                     .withState(GameSession.State.Complete)
-                    .withError(SubmitError.NONE)
+                    .withError(null)
                     .withIsGameOver(true);
             case ALREADY_GUESSED -> {
                 log.warn("Already guessed: {}", guess);
                 mutate.withError(SubmitError.ALREADY_GUESSED);
             }
             case ADDED -> mutate.withLastSubmissionTimestamp(now)
-                    .withError(SubmitError.NONE)
+                    .withError(null)
                     .withGuesses(res.result);
         }
         return mutate.build();

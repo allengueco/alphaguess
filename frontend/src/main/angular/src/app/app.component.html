@@ -1,5 +1,4 @@
 <div class="h-screen w-screen flex flex-col items-center">
-
   <h1 class="text-black font-medium text-6xl pt-48 pb-20">{{ title }}</h1>
   @if (submitResult | async; as result) {
     <h1 class="text-4xl">Words After:</h1>
@@ -14,8 +13,19 @@
           <h2>{{ g }}</h2>
         }
       }
-
     </div>
+    @if (result.error; as err) {
+      <div class="rounded box-border h-32 w-48 text-center content-center bg-red-400 text-white text-xl">
+        @switch (err) {
+          @case ("ALREADY_GUESSED") {
+            <h1>Already guessed</h1>
+          }
+          @case ("INVALID_WORD") {
+            <h1>Word is invalid</h1>
+          }
+        }
+      </div>
+    }
     <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-row">
       <input
         class="shadow
@@ -26,6 +36,7 @@
         text-gray-700 leading-tight
         focus:outline-none
         focus:shadow-outline"
+        autofocus
         formControlName="guess"
         id="username">
       <button

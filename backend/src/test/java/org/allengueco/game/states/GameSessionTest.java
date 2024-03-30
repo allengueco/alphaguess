@@ -2,7 +2,6 @@ package org.allengueco.game.states;
 
 import org.allengueco.game.GameSession;
 import org.allengueco.game.Guesses;
-import org.allengueco.game.SubmitError;
 import org.allengueco.service.GameService;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
@@ -63,7 +62,7 @@ class GameSessionTest {
                 "guess",
                 GameSession.State.Submit,
                 g,
-                SubmitError.NONE,
+                null,
                 Instant.EPOCH,
                 Instant.MAX,
                 false);
@@ -95,7 +94,7 @@ class GameSessionTest {
         void enumFieldsAreSerialized() {
             assertThat(asJson)
                     .extractingJsonPathStringValue("error")
-                    .isEqualTo("NONE");
+                    .isNull();
         }
 
         @Test
@@ -140,7 +139,7 @@ class GameSessionTest {
                         "before": ["base", "case"],
                         "after": ["mandarin", "power"]
                     },
-                    "error": "NONE",
+                    "error": null,
                     "isGameOver": false
                 }
                 """;
@@ -154,7 +153,7 @@ class GameSessionTest {
         @Test
         void noNullFields() {
             assertThat(content)
-                    .hasNoNullFieldsOrProperties();
+                    .hasNoNullFieldsOrPropertiesExcept("error");
         }
 
         @ParameterizedTest

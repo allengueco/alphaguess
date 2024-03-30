@@ -4,7 +4,7 @@ import {RouterOutlet} from '@angular/router';
 import {BetaGuessService} from "./beta-guess.service";
 import {AsyncValidatorFn, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {GameSessionSummary} from "./model/SubmitResult.model";
-import {map, Observable, of} from 'rxjs';
+import {map, Observable, of, share} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -18,12 +18,7 @@ export class AppComponent implements OnInit {
   betaGuessService = inject(BetaGuessService);
   cd = inject(ChangeDetectorRef)
   title = 'betaguess';
-  submitResult: Observable<GameSessionSummary & typeof this.highlight> = of();
-
-  highlight = {
-    letters: '',
-    index: 0
-  }
+  submitResult: Observable<GameSessionSummary & { letters: string, index: number }> = of();
   errorValidator: AsyncValidatorFn = (_form) => {
     return this.submitResult.pipe(
       map(r => ({
@@ -42,7 +37,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.submitResult = this.betaGuessService.submit()
-      .pipe(map(s => ({...s, ...this.updateWordHints(s)})))
+      .pipe(map(s => ({...s, ...this.updateWordHints(s)})),
+        share()
+      )
   }
 
   onSubmit() {
@@ -52,7 +49,7 @@ export class AppComponent implements OnInit {
     this.form.reset();
   }
 
-  updateWordHints(summary: GameSessionSummary): typeof this.highlight {
+  updateWordHints(summary: GameSessionSummary): { letters: string, index: number } {
     const afterLength = summary.guesses.after.length;
     const top = summary.guesses.after[afterLength - 1] ?? '';
     const bottom = summary.guesses.before[0] ?? '';

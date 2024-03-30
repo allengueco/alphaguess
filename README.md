@@ -39,7 +39,7 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Date: Thu, 28 Mar 2024 21:08:57 GMT
 
-{"guesses":{"before":[],"after":["bark"]},"error":"NONE","lastSubmissionTimestamp":"2024-03-28T21:08:57.295570700Z","isGameOver":false}
+{"guesses":{"before":[],"after":["bark"]},"error":null,"lastSubmissionTimestamp":"2024-03-28T21:08:57.295570700Z","isGameOver":false}
 ```
 
 Any subsequent guesses must contain the `SESSION` cookie.
@@ -60,7 +60,7 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Date: Thu, 28 Mar 2024 21:15:47 GMT
 
-{"guesses":{"before":[],"after":["bark","example"]},"error":"NONE","lastSubmissionTimestamp":"2024-03-28T21:15:47.672291100Z","isGameOver":false}
+{"guesses":{"before":[],"after":["bark","example"]},"error":null,"lastSubmissionTimestamp":"2024-03-28T21:15:47.672291100Z","isGameOver":false}
 ```
 
 ## API Reference

@@ -33,5 +33,6 @@ public class StateController {
             @RequestBody(required = false) SubmitRequest request) {
         String guess = request == null ? null : request.guess();
         return ResponseEntity.of(gameService.addGuess(session.getId(), guess));
+
     }
 }
