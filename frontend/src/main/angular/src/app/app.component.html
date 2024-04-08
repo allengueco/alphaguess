@@ -15,7 +15,7 @@
       }
     </div>
     @if (result.error; as err) {
-      <div class="rounded box-border h-32 w-48 text-center content-center bg-red-400 text-white text-xl">
+      <div class="rounded box-border h-32 w-48 pb-5 text-center content-center bg-red-400 text-white text-xl">
         @switch (err) {
           @case ("ALREADY_GUESSED") {
             <h1>Already guessed</h1>

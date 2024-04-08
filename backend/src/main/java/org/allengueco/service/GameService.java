@@ -42,7 +42,7 @@ public class GameService {
                 .findById(id).orElseGet(() -> newGameSession(id));
         if (guess == null || guess.isEmpty() || guess.isBlank()) {
             log.info("[guess] is empty. Returning current session state if it exists...");
-            return Optional.of(session);
+            return Optional.of(stripError(session));
         }
 
         String normalized = normalized(guess);
@@ -72,6 +72,10 @@ public class GameService {
                 null,
                 false);
         return stateHandler.handle(newSession);
+    }
+    
+    GameSession stripError(GameSession session) {
+        return session.mutate().withError(null).build();
     }
 
     String normalized(String s) {
