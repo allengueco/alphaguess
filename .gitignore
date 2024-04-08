@@ -3,10 +3,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-spring-shell.log
-
 **/*/node_modules
 
+**/node/*
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
