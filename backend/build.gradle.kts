@@ -3,22 +3,43 @@
  */
 
 plugins {
-    id("buildlogic.java-conventions")
+    java
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+group = "org.allengueco"
+version = "1.0-SNAPSHOT"
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 dependencies {
-    api(libs.org.springframework.boot.spring.boot.starter.actuator)
-    api(libs.org.springframework.boot.spring.boot.starter.web)
-    api(libs.org.springframework.boot.spring.boot.configuration.processor)
-    api(libs.org.eclipse.collections.eclipse.collections)
-    api(libs.org.eclipse.collections.eclipse.collections.api)
-    api(libs.org.springframework.boot.spring.boot.starter.data.redis)
-    api(libs.org.springframework.session.spring.session.data.redis)
-    api(libs.com.fasterxml.jackson.datatype.jackson.datatype.eclipse.collections)
-    testImplementation(libs.org.springframework.boot.spring.boot.starter.test)
-    testImplementation(libs.org.testcontainers.junit.jupiter)
-    testImplementation(libs.org.springframework.boot.spring.boot.testcontainers)
-    testImplementation(libs.com.redis.testcontainers.testcontainers.redis.junit.jupiter)
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.configuration.processor)
+    implementation(libs.eclipse.collections)
+    implementation(libs.eclipse.collections.api)
+    implementation(libs.spring.boot.starter.data.redis)
+    implementation(libs.spring.session.data.redis)
+    implementation(libs.jackson.datatype.eclipse.collections)
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.redis.junit.jupiter)
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.spring.boot.testcontainers)
 }
 
 description = "backend"
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<Javadoc> {
+    options.encoding = "UTF-8"
+}

@@ -2,29 +2,28 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-com-fasterxml-jackson-datatype-jackson-datatype-eclipse-collections = "2.17.0"
-com-redis-testcontainers-testcontainers-redis-junit-jupiter = "1.4.6"
-org-eclipse-collections-eclipse-collections = "11.1.0"
-org-eclipse-collections-eclipse-collections-api = "11.1.0"
-org-springframework-boot-spring-boot-configuration-processor = "3.2.3"
-org-springframework-boot-spring-boot-starter-actuator = "3.2.3"
-org-springframework-boot-spring-boot-starter-data-redis = "3.2.3"
-org-springframework-boot-spring-boot-starter-test = "3.2.3"
-org-springframework-boot-spring-boot-starter-web = "3.2.3"
-org-springframework-boot-spring-boot-testcontainers = "3.2.3"
-org-springframework-session-spring-session-data-redis = "3.2.1"
-org-testcontainers-junit-jupiter = "1.19.5"
+jackson-datatype-eclipse-collections = "2.17.0"
+testcontainers-redis-junit-jupiter = "1.4.6"
+testcontainers-junit-jupiter = "1.19.5"
+
+spring-dependency-management = "1.1.4"
+spring-boot = "3.2.3"
+eclipse-collections = "11.1.0"
 
 [libraries]
-com-fasterxml-jackson-datatype-jackson-datatype-eclipse-collections = { module = "com.fasterxml.jackson.datatype:jackson-datatype-eclipse-collections", version.ref = "com-fasterxml-jackson-datatype-jackson-datatype-eclipse-collections" }
-com-redis-testcontainers-testcontainers-redis-junit-jupiter = { module = "com.redis.testcontainers:testcontainers-redis-junit-jupiter", version.ref = "com-redis-testcontainers-testcontainers-redis-junit-jupiter" }
-org-eclipse-collections-eclipse-collections = { module = "org.eclipse.collections:eclipse-collections", version.ref = "org-eclipse-collections-eclipse-collections" }
-org-eclipse-collections-eclipse-collections-api = { module = "org.eclipse.collections:eclipse-collections-api", version.ref = "org-eclipse-collections-eclipse-collections-api" }
-org-springframework-boot-spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "org-springframework-boot-spring-boot-configuration-processor" }
-org-springframework-boot-spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "org-springframework-boot-spring-boot-starter-actuator" }
-org-springframework-boot-spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "org-springframework-boot-spring-boot-starter-data-redis" }
-org-springframework-boot-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "org-springframework-boot-spring-boot-starter-test" }
-org-springframework-boot-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "org-springframework-boot-spring-boot-starter-web" }
-org-springframework-boot-spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "org-springframework-boot-spring-boot-testcontainers" }
-org-springframework-session-spring-session-data-redis = { module = "org.springframework.session:spring-session-data-redis", version.ref = "org-springframework-session-spring-session-data-redis" }
-org-testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "org-testcontainers-junit-jupiter" }
+jackson-datatype-eclipse-collections = { module = "com.fasterxml.jackson.datatype:jackson-datatype-eclipse-collections", version.ref = "jackson-datatype-eclipse-collections" }
+testcontainers-redis-junit-jupiter = { module = "com.redis.testcontainers:testcontainers-redis-junit-jupiter", version.ref = "testcontainers-redis-junit-jupiter" }
+eclipse-collections = { module = "org.eclipse.collections:eclipse-collections", version.ref = "eclipse-collections" }
+eclipse-collections-api = { module = "org.eclipse.collections:eclipse-collections-api", version.ref = "eclipse-collections" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
+spring-session-data-redis = { module = "org.springframework.session:spring-session-data-redis" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-junit-jupiter" }
+
+[plugins]
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
