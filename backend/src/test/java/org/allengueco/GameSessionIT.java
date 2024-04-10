@@ -1,6 +1,5 @@
 package org.allengueco;
 
-import com.redis.testcontainers.RedisContainer;
 import jakarta.servlet.http.Cookie;
 import org.allengueco.dto.SubmitRequest;
 import org.allengueco.game.Dictionary;
@@ -15,13 +14,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.boot.testcontainers.context.ImportTestcontainers;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -32,10 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
+@ImportTestcontainers(Containers.class)
 public class GameSessionIT {
-    @Container
-    @ServiceConnection
-    static final RedisContainer REDIS_CONTAINER = new RedisContainer(DockerImageName.parse("redis:latest"));
     private static final Logger log = LoggerFactory.getLogger(GameSessionIT.class);
     final String SUBMIT_API = "/api/submit";
 

@@ -1,6 +1,5 @@
 package org.allengueco;
 
-import com.redis.testcontainers.RedisContainer;
 import org.allengueco.game.GameSession;
 import org.allengueco.game.Guesses;
 import org.allengueco.repository.GameRepository;
@@ -8,11 +7,9 @@ import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.junit.jupiter.Container;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.testcontainers.context.ImportTestcontainers;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,13 +17,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@DataRedisTest
+@DataJpaTest
 @Testcontainers(disabledWithoutDocker = true)
+@ImportTestcontainers(Containers.class)
 public class GameSessionRepositoryTest {
-    @Container
-    @ServiceConnection
-    static final RedisContainer REDIS_CONTAINER = new RedisContainer(DockerImageName.parse("redis:latest"));
-
     @Autowired
     GameRepository repository;
 

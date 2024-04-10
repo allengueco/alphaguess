@@ -20,18 +20,12 @@ java {
 }
 
 dependencies {
-    implementation(libs.spring.boot.starter.web)
-    implementation(libs.spring.boot.starter.actuator)
-    implementation(libs.spring.boot.configuration.processor)
-    implementation(libs.eclipse.collections)
-    implementation(libs.eclipse.collections.api)
-    implementation(libs.spring.boot.starter.data.redis)
-    implementation(libs.spring.session.data.redis)
-    implementation(libs.jackson.datatype.eclipse.collections)
-    testImplementation(libs.testcontainers.junit.jupiter)
-    testImplementation(libs.testcontainers.redis.junit.jupiter)
+    implementation(libs.bundles.spring)
+    implementation(libs.bundles.eclipse.collections)
+    implementation(libs.bundles.jackson)
     testImplementation(libs.spring.boot.starter.test)
-    testImplementation(libs.spring.boot.testcontainers)
+    testImplementation(libs.bundles.testcontainers)
+    runtimeOnly(libs.postgres)
 }
 
 description = "backend"

@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Random;
 
 @Configuration
+@EnableJpaRepositories
 public class BetaGuessConfig {
     private final Logger log = LoggerFactory.getLogger(BetaGuessConfig.class);
 

@@ -1,15 +1,18 @@
 package org.allengueco.game;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.redis.core.RedisHash;
 
 import java.time.Instant;
 
-@RedisHash
-public record GameSession(@Id String id,
+@Entity
+@Table(name = "sessions")
+public record GameSession(@Id
+                          String id,
                           String answer,
                           String guess,
                           State state,

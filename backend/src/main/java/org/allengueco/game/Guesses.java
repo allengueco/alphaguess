@@ -1,12 +1,9 @@
 package org.allengueco.game;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.allengueco.GuessesSerializer;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 
 import java.util.Set;
 
-@JsonSerialize(using = GuessesSerializer.class)
 public record Guesses(Set<String> before, Set<String> after) {
     public static Guesses empty() {
         return new Guesses(TreeSortedSet.newSet(), TreeSortedSet.newSet());

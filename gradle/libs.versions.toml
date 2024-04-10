@@ -3,7 +3,6 @@
 
 [versions]
 jackson-datatype-eclipse-collections = "2.17.0"
-testcontainers-redis-junit-jupiter = "1.4.6"
 testcontainers-junit-jupiter = "1.19.5"
 
 spring-dependency-management = "1.1.4"
@@ -12,17 +11,36 @@ eclipse-collections = "11.1.0"
 
 [libraries]
 jackson-datatype-eclipse-collections = { module = "com.fasterxml.jackson.datatype:jackson-datatype-eclipse-collections", version.ref = "jackson-datatype-eclipse-collections" }
-testcontainers-redis-junit-jupiter = { module = "com.redis.testcontainers:testcontainers-redis-junit-jupiter", version.ref = "testcontainers-redis-junit-jupiter" }
 eclipse-collections = { module = "org.eclipse.collections:eclipse-collections", version.ref = "eclipse-collections" }
 eclipse-collections-api = { module = "org.eclipse.collections:eclipse-collections-api", version.ref = "eclipse-collections" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
-spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
-spring-session-data-redis = { module = "org.springframework.session:spring-session-data-redis" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-junit-jupiter" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql" }
+postgres = { module = "org.postgresql:postgresql" }
+spring-session-jdbc = { module = "org.springframework.session:spring-session-jdbc" }
+[bundles]
+spring = [
+    "spring-boot-configuration-processor",
+    "spring-boot-starter-actuator",
+    "spring-boot-starter-web",
+    "spring-boot-starter-data-jpa",
+    "spring-session-jdbc"
+]
+eclipse-collections = [
+    "eclipse-collections",
+    "eclipse-collections-api"
+]
+jackson = ["jackson-datatype-eclipse-collections"]
+testcontainers = [
+    "spring-boot-testcontainers",
+    "testcontainers-junit-jupiter",
+    "testcontainers-postgresql"
+]
 
 [plugins]
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
