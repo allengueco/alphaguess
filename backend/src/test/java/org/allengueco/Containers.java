@@ -8,5 +8,6 @@ import org.testcontainers.utility.DockerImageName;
 public interface Containers {
     @Container
     @ServiceConnection
-    PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:9.6.12"));
+    PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16"))
+            .withDatabaseName("betaguess");
 }

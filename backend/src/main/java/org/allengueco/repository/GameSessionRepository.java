@@ -5,5 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GameRepository extends CrudRepository<GameSession, String> {
+public interface GameSessionRepository extends CrudRepository<GameSession, String> {
+    
 }

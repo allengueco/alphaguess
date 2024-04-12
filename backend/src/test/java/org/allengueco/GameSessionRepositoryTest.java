@@ -2,7 +2,7 @@ package org.allengueco;
 
 import org.allengueco.game.GameSession;
 import org.allengueco.game.Guesses;
-import org.allengueco.repository.GameRepository;
+import org.allengueco.repository.GameSessionRepository;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ImportTestcontainers(Containers.class)
 public class GameSessionRepositoryTest {
     @Autowired
-    GameRepository repository;
+    GameSessionRepository repository;
 
     @Test
     void save() {
@@ -33,7 +33,7 @@ public class GameSessionRepositoryTest {
                 "answer",
                 "guess",
                 GameSession.State.Submit,
-                g,
+                null,
                 null,
                 Instant.EPOCH,
                 Instant.MAX,
@@ -51,7 +51,7 @@ public class GameSessionRepositoryTest {
         assertThat(retrieved)
                 .get()
                 .extracting(GameSession::guesses)
-                .extracting(Guesses::before)
+//                .extracting(Guesses::before)
                 .asInstanceOf(InstanceOfAssertFactories.iterable(String.class))
                 .containsExactlyElementsOf(List.of("mandarin", "power"));
     }
@@ -65,7 +65,7 @@ public class GameSessionRepositoryTest {
                 "answer",
                 "guess",
                 GameSession.State.Submit,
-                g,
+                null,
                 null,
                 Instant.EPOCH,
                 Instant.MAX,

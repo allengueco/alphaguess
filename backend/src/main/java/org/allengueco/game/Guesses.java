@@ -3,10 +3,25 @@ package org.allengueco.game;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 public record Guesses(Set<String> before, Set<String> after) {
     public static Guesses empty() {
         return new Guesses(TreeSortedSet.newSet(), TreeSortedSet.newSet());
+    }
+
+    public static Guesses from(Set<Guess> g) {
+        var before = new TreeSet<String>();
+        var after = new TreeSet<String>();
+
+        for (var guess : g) {
+            switch (guess.position) {
+                case BEFORE -> before.add(guess.word);
+                case AFTER -> after.add(guess.word);
+            }
+        }
+
+        return new Guesses(before, after);
     }
 
     public Mutate mutate() {

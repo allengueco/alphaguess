@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.util.Random;
 
 @Configuration
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "org.allengueco.repository")
 public class BetaGuessConfig {
     private final Logger log = LoggerFactory.getLogger(BetaGuessConfig.class);
 

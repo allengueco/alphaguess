@@ -1,33 +1,67 @@
 package org.allengueco.game;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "sessions")
-public record GameSession(@Id
-                          String id,
-                          String answer,
-                          String guess,
-                          State state,
-                          @JsonView(Summary.class)
-                          Guesses guesses,
-                          @JsonView(Summary.class)
-                          SubmitError error,
+@Table(name = "session")
+public final class GameSession {
+    @Id
+    private String id;
 
-                          @CreatedDate
-                          Instant start,
-                          @JsonView(Summary.class)
-                          @LastModifiedDate
-                          Instant lastSubmissionTimestamp,
-                          @JsonView(Summary.class)
-                          boolean isGameOver) {
+    private String answer;
+
+    private String guess;
+
+    private State state;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "session")
+    @JsonDeserialize(GuessListSerializer.class)
+    @JsonView(GameSession.Summary.class)
+    private List<Guess> guesses;
+
+    @JsonView(Summary.class)
+    private SubmitError error;
+
+    @CreatedDate
+    private Instant start;
+
+    @JsonView(Summary.class)
+    @LastModifiedDate
+    private Instant lastSubmissionTimestamp;
+
+    @JsonView(Summary.class)
+    private boolean isGameOver;
+
+
+    public GameSession(String id, String answer, String guess, State state, List<Guess> guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
+        this.id = id;
+        this.answer = answer;
+        this.guess = guess;
+        this.state = state;
+        this.guesses = guesses;
+        this.error = error;
+        this.start = start;
+        this.lastSubmissionTimestamp = lastSubmissionTimestamp;
+        this.isGameOver = isGameOver;
+    }
+
+    public GameSession() {
+
+    }
+
+    public void addGuess(Guess guess) {
+        this.guesses.add(guess);
+        guess.setSession(this);
+    }
 
     public Mutate mutate() {
         return new Mutate(this);
@@ -35,7 +69,56 @@ public record GameSession(@Id
 
     @Override
     public String toString() {
-        return "GameSession{" + "id='" + id + '\'' + ", state=" + state + ", answer='" + answer + '\'' + ", guess='" + guess + '\'' + ", guesses=" + guesses + ", start=" + start + ", lastSubmissionTimestamp=" + lastSubmissionTimestamp + '}';
+        return "GameSession{" + "id='" + id + '\'' + ", state=" + state + ", answer='" + answer + '\'' + ", guesses=" + guesses + ", start=" + start + ", lastSubmissionTimestamp=" + lastSubmissionTimestamp + '}';
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public String answer() {
+        return answer;
+    }
+
+    public String guess() {
+        return guess;
+    }
+
+    public State state() {
+        return state;
+    }
+
+    public List<Guess> guesses() {
+        return guesses;
+    }
+
+    public SubmitError error() {
+        return error;
+    }
+
+    public Instant start() {
+        return start;
+    }
+
+    public Instant lastSubmissionTimestamp() {
+        return lastSubmissionTimestamp;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (GameSession) obj;
+        return Objects.equals(this.id, that.id) && Objects.equals(this.answer, that.answer) && Objects.equals(this.guess, that.guess) && Objects.equals(this.state, that.state) && Objects.equals(this.guesses, that.guesses) && Objects.equals(this.error, that.error) && Objects.equals(this.start, that.start) && Objects.equals(this.lastSubmissionTimestamp, that.lastSubmissionTimestamp) && this.isGameOver == that.isGameOver;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, answer, guess, state, guesses, error, start, lastSubmissionTimestamp, isGameOver);
     }
 
     public enum State {
@@ -54,13 +137,13 @@ public record GameSession(@Id
         State state;
         String answer;
         String guess;
-        Guesses guesses;
+        List<Guess> guesses;
         SubmitError error;
         Instant start;
         Instant lastSubmissionTimestamp;
         boolean isGameOver;
 
-        public Mutate(String id, State state, String answer, String guess, Guesses guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
+        public Mutate(String id, State state, String answer, String guess, List<Guess> guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
             this.id = id;
             this.state = state;
             this.answer = answer;
@@ -96,7 +179,7 @@ public record GameSession(@Id
             return this;
         }
 
-        public Mutate withGuesses(Guesses guesses) {
+        public Mutate withGuesses(List<Guess> guesses) {
             this.guesses = guesses;
             return this;
         }

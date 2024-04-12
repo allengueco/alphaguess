@@ -1,16 +1,12 @@
 package org.allengueco.game.states;
 
-import org.allengueco.game.GameSession;
-import org.allengueco.game.Guesses;
-import org.allengueco.game.Result;
-import org.allengueco.game.SubmitError;
-import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
+import org.allengueco.game.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.Set;
+import java.util.List;
 
 @Component
 public class SubmitGuessState implements State {
@@ -38,7 +34,7 @@ public class SubmitGuessState implements State {
             }
             case ADDED -> mutate.withLastSubmissionTimestamp(now)
                     .withError(null)
-                    .withGuesses(res.result);
+                    .withGuesses(res.guesses);
         }
         return mutate.build();
     }
@@ -53,23 +49,25 @@ public class SubmitGuessState implements State {
      */
     private AddResult addGuess(GameSession session, String guess) throws IllegalStateException {
         String answer = session.answer();
-        Guesses g = session.guesses();
+        List<Guess> guesses = session.guesses();
 
         int result = String.CASE_INSENSITIVE_ORDER.compare(answer, guess);
         if (result == 0) {
-            return new AddResult(g, Result.EQUAL);
+            return new AddResult(guesses, Result.EQUAL);
         }
 
-        Set<String> before = TreeSortedSet.newSet(String.CASE_INSENSITIVE_ORDER, g.before());
-        Set<String> after = TreeSortedSet.newSet(String.CASE_INSENSITIVE_ORDER, g.after());
-        Set<String> half = result > 0 ? after : before;
-        boolean added = half.add(guess);
-        Guesses modified = new Guesses(before, after);
+        if (guesses.stream().anyMatch(g -> g.getWord().equals(guess))) {
+            return new AddResult(guesses, Result.ALREADY_GUESSED);
+        }
 
-        return added ? new AddResult(modified, Result.ADDED) : new AddResult(null, Result.ALREADY_GUESSED);
+        Guess.Position pos = result > 0 ? Guess.Position.AFTER : Guess.Position.BEFORE;
+        Guess addedGuess = new Guess(guess, pos);
+        guesses.add(addedGuess);
+
+        return new AddResult(guesses, Result.ADDED);
     }
 
-    private record AddResult(Guesses result, Result error) {
+    private record AddResult(List<Guess> guesses, Result error) {
 
     }
 }

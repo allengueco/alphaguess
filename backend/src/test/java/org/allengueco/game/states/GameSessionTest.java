@@ -61,7 +61,7 @@ class GameSessionTest {
                 "answer",
                 "guess",
                 GameSession.State.Submit,
-                g,
+                null,
                 null,
                 Instant.EPOCH,
                 Instant.MAX,

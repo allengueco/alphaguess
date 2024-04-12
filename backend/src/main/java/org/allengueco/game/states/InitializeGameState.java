@@ -1,9 +1,8 @@
 package org.allengueco.game.states;
 
 import org.allengueco.game.GameSession;
-import org.allengueco.game.Guesses;
 import org.allengueco.game.WordSelector;
-import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
+import org.eclipse.collections.api.factory.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ public class InitializeGameState implements State {
         return session
                 .mutate()
                 .withAnswer(selectedWord)
-                .withGuesses(new Guesses(TreeSortedSet.newSet(), TreeSortedSet.newSet()))
+                .withGuesses(Lists.mutable.empty())
                 .withStart(Instant.now())
                 .withState(GameSession.State.Submit)
                 .withError(null)
