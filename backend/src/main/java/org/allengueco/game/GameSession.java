@@ -1,7 +1,5 @@
 package org.allengueco.game;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,21 +22,16 @@ public final class GameSession {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "session")
-    @JsonDeserialize(GuessListSerializer.class)
-    @JsonView(GameSession.Summary.class)
     private List<Guess> guesses;
 
-    @JsonView(Summary.class)
     private SubmitError error;
 
     @CreatedDate
     private Instant start;
 
-    @JsonView(Summary.class)
     @LastModifiedDate
     private Instant lastSubmissionTimestamp;
 
-    @JsonView(Summary.class)
     private boolean isGameOver;
 
 
@@ -123,10 +116,6 @@ public final class GameSession {
 
     public enum State {
         Initialize, Submit, Complete
-    }
-
-    public static class Summary {
-
     }
 
     /**

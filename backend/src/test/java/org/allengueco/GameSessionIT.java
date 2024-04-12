@@ -53,9 +53,9 @@ public class GameSessionIT {
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.before", Matchers.empty()),
                         jsonPath("$.guesses.after", Matchers.empty()),
-                        jsonPath("$.error", Matchers.nullValue()),
-                        jsonPath("$.isGameOver", Matchers.is(false)),
-                        jsonPath("$.lastSubmissionTimestamp", Matchers.nullValue())
+                        jsonPath("$.error").doesNotExist(),
+                        jsonPath("$.gameOver", Matchers.is(false)),
+                        jsonPath("$.lastSubmissionTimestamp").doesNotExist()
                 );
     }
 
@@ -79,8 +79,8 @@ public class GameSessionIT {
         testRequest(new SubmitRequest("port"), sessionCookie)
                 .andDo(print())
                 .andExpectAll(
-                        jsonPath("$.isGameOver", Matchers.is(false)),
-                        jsonPath("$.error", Matchers.nullValue()),
+                        jsonPath("$.gameOver", Matchers.is(false)),
+                        jsonPath("$.error").doesNotExist(),
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.after", Matchers.empty()),
                         jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great", "port")),
@@ -107,8 +107,8 @@ public class GameSessionIT {
 
         testRequest(null, sessionCookie)
                 .andExpectAll(
-                        jsonPath("$.isGameOver", Matchers.is(false)),
-                        jsonPath("$.error", Matchers.nullValue()),
+                        jsonPath("$.gameOver", Matchers.is(false)),
+                        jsonPath("$.error").doesNotExist(),
                         jsonPath("$.guesses", Matchers.notNullValue()),
                         jsonPath("$.guesses.after", Matchers.empty()),
                         jsonPath("$.guesses.before", Matchers.containsInRelativeOrder("great")),
@@ -146,7 +146,7 @@ public class GameSessionIT {
                 .split("=")[1];
 
         testRequest(new SubmitRequest("answer"), sessionCookie)
-                .andExpect(jsonPath("$.isGameOver", Matchers.is(true)));
+                .andExpect(jsonPath("$.gameOver", Matchers.is(true)));
     }
 
     private ResultActions testRequest(SubmitRequest request, String sessionCookie) throws Exception {
@@ -218,8 +218,8 @@ public class GameSessionIT {
             }
 
             result.andExpectAll(
-                    jsonPath("$.isGameOver", Matchers.is(true)),
-                    jsonPath("$.error", Matchers.nullValue()),
+                    jsonPath("$.gameOver", Matchers.is(true)),
+                    jsonPath("$.error").doesNotExist(),
                     jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue()),
                     jsonPath("$.guesses.after", Matchers.contains(AFTER)),
                     jsonPath("$.guesses.before", Matchers.contains(BEFORE))
@@ -273,8 +273,8 @@ public class GameSessionIT {
             }
 
             result.andExpectAll(
-                    jsonPath("$.isGameOver", Matchers.is(true)),
-                    jsonPath("$.error", Matchers.nullValue()),
+                    jsonPath("$.gameOver", Matchers.is(true)),
+                    jsonPath("$.error").doesNotExist(),
                     jsonPath("$.lastSubmissionTimestamp", Matchers.notNullValue()),
                     jsonPath("$.guesses.after", Matchers.contains(AFTER)),
                     jsonPath("$.guesses.before", Matchers.contains(BEFORE))

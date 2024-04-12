@@ -5,8 +5,8 @@
 plugins {
     java
     alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependency.management)
 }
+apply(plugin = "io.spring.dependency-management")
 
 repositories {
     mavenCentral()
@@ -32,6 +32,10 @@ description = "backend"
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.withType<Javadoc> {

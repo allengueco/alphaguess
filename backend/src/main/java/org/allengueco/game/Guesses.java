@@ -2,15 +2,18 @@ package org.allengueco.game;
 
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public record Guesses(Set<String> before, Set<String> after) {
+public record Guesses(
+        Set<String> before,
+        Set<String> after) {
     public static Guesses empty() {
         return new Guesses(TreeSortedSet.newSet(), TreeSortedSet.newSet());
     }
 
-    public static Guesses from(Set<Guess> g) {
+    public static Guesses from(List<Guess> g) {
         var before = new TreeSet<String>();
         var after = new TreeSet<String>();
 
