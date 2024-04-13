@@ -86,4 +86,35 @@ public class GameSessionRepositoryTest {
                 .extracting(GameSession::guesses, as(InstanceOfAssertFactories.list(Guess.class)))
                 .isNotEmpty();
     }
+
+    @Test
+    void addGuessTest() {
+        List<Guess> g = List.of(
+                new Guess("mandarin", Guess.Position.BEFORE),
+                new Guess("power", Guess.Position.BEFORE),
+                new Guess("base", Guess.Position.AFTER),
+                new Guess("case", Guess.Position.AFTER)
+        );
+        GameSession s = new GameSession("1",
+                "answer",
+                "guess",
+                GameSession.State.Submit,
+                g,
+                null,
+                START,
+                SUBMIT_TIMESTAMP,
+                false);
+
+        repository.save(s);
+
+        var retrieved = repository.findById("1");
+        retrieved.ifPresent(gs -> gs.addGuess(new Guess("zip", Guess.Position.BEFORE)));
+
+        assertThat(retrieved)
+                .get().extracting(GameSession::guesses)
+                .asList()
+
+                .hasSize(5)
+
+    }
 }

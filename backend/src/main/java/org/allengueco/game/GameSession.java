@@ -34,7 +34,6 @@ public final class GameSession {
 
     private boolean isGameOver;
 
-
     public GameSession(String id, String answer, String guess, State state, List<Guess> guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
         this.id = id;
         this.answer = answer;

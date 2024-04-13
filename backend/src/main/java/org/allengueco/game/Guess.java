@@ -2,6 +2,8 @@ package org.allengueco.game;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "guess")
 public class Guess {
@@ -15,6 +17,7 @@ public class Guess {
     Position position;
 
     public Guess() {
+
     }
 
     public Guess(String word, Position position) {
@@ -52,6 +55,19 @@ public class Guess {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Guess guess = (Guess) o;
+        return Objects.equals(session, guess.session) && Objects.equals(word, guess.word) && position == guess.position;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(session, word, position);
     }
 
     public enum Position {
