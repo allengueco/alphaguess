@@ -111,10 +111,9 @@ public class GameSessionRepositoryTest {
         retrieved.ifPresent(gs -> gs.addGuess(new Guess("zip", Guess.Position.BEFORE)));
 
         assertThat(retrieved)
-                .get().extracting(GameSession::guesses)
-                .asList()
-
-                .hasSize(5)
+                .get().extracting(GameSession::guesses, as(InstanceOfAssertFactories.list(Guess.class)))
+                .anyMatch(gs -> gs.getWord().equals("zip") && gs.getPosition().equals(Guess.Position.BEFORE))
+                .hasSize(5);
 
     }
 }

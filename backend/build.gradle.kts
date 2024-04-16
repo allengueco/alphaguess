@@ -23,9 +23,10 @@ dependencies {
     implementation(libs.bundles.spring)
     implementation(libs.bundles.eclipse.collections)
     implementation(libs.bundles.jackson)
+    runtimeOnly(libs.postgres)
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.bundles.testcontainers)
-    runtimeOnly(libs.postgres)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 description = "backend"
@@ -36,6 +37,10 @@ tasks.withType<JavaCompile> {
 
 tasks.test {
     useJUnitPlatform()
+
+    testLogging {
+        
+    }
 }
 
 tasks.withType<Javadoc> {
