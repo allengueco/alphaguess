@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api")
 public class StateController {
@@ -32,7 +34,7 @@ public class StateController {
             HttpSession session,
             @RequestBody(required = false) SubmitRequest request) {
         String guess = request == null ? null : request.guess();
-        return ResponseEntity.of(gameService.addGuess(session.getId(), guess)
+        return ResponseEntity.of(gameService.addGuess(UUID.fromString(session.getId()), guess)
                 .map(GameSessionState::from));
 
     }

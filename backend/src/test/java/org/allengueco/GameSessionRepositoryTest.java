@@ -4,6 +4,7 @@ import org.allengueco.game.GameSession;
 import org.allengueco.game.Guess;
 import org.allengueco.repository.GameSessionRepository;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,6 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -28,6 +30,13 @@ public class GameSessionRepositoryTest {
     @Autowired
     GameSessionRepository repository;
 
+    UUID id;
+
+    @BeforeEach
+    void setup() {
+        id = UUID.randomUUID();
+    }
+
     @Test
     void save() {
         List<Guess> g = List.of(
@@ -36,7 +45,7 @@ public class GameSessionRepositoryTest {
                 new Guess("base", Guess.Position.AFTER),
                 new Guess("case", Guess.Position.AFTER)
         );
-        GameSession s = new GameSession("1",
+        GameSession s = new GameSession(id,
                 "answer",
                 "guess",
                 GameSession.State.Submit,
@@ -48,7 +57,7 @@ public class GameSessionRepositoryTest {
 
         repository.save(s);
 
-        Optional<GameSession> retrieved = repository.findById("1");
+        Optional<GameSession> retrieved = repository.findById(id);
         assertThat(retrieved)
                 .get()
                 .hasNoNullFieldsOrPropertiesExcept("error")
@@ -67,7 +76,7 @@ public class GameSessionRepositoryTest {
     @Test
     void saveEmptyGuess() {
         List<Guess> g = List.of(new Guess("boy", Guess.Position.BEFORE));
-        GameSession s = new GameSession("1",
+        GameSession s = new GameSession(id,
                 "answer",
                 "guess",
                 GameSession.State.Submit,
@@ -78,7 +87,7 @@ public class GameSessionRepositoryTest {
                 false);
 
         repository.save(s);
-        var retrieved = repository.findById("1");
+        var retrieved = repository.findById(id);
 
         assertThat(retrieved)
                 .get()
@@ -95,7 +104,7 @@ public class GameSessionRepositoryTest {
                 new Guess("base", Guess.Position.AFTER),
                 new Guess("case", Guess.Position.AFTER)
         );
-        GameSession s = new GameSession("1",
+        GameSession s = new GameSession(id,
                 "answer",
                 "guess",
                 GameSession.State.Submit,
@@ -107,13 +116,12 @@ public class GameSessionRepositoryTest {
 
         repository.save(s);
 
-        var retrieved = repository.findById("1");
+        var retrieved = repository.findById(id);
         retrieved.ifPresent(gs -> gs.addGuess(new Guess("zip", Guess.Position.BEFORE)));
 
         assertThat(retrieved)
                 .get().extracting(GameSession::guesses, as(InstanceOfAssertFactories.list(Guess.class)))
                 .anyMatch(gs -> gs.getWord().equals("zip") && gs.getPosition().equals(Guess.Position.BEFORE))
                 .hasSize(5);
-
     }
 }

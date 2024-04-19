@@ -1,18 +1,20 @@
 package org.allengueco.game;
 
 import jakarta.persistence.*;
+import org.eclipse.collections.api.factory.Lists;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "session")
 public final class GameSession {
     @Id
-    private String id;
+    private UUID id;
 
     private String answer;
 
@@ -20,9 +22,11 @@ public final class GameSession {
 
     private State state;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "session")
-    private List<Guess> guesses;
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JoinColumn(name = "session_id")
+    private List<Guess> guesses = Lists.mutable.empty();
 
     private SubmitError error;
 
@@ -34,7 +38,7 @@ public final class GameSession {
 
     private boolean isGameOver;
 
-    public GameSession(String id, String answer, String guess, State state, List<Guess> guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
+    public GameSession(UUID id, String answer, String guess, State state, List<Guess> guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
         this.id = id;
         this.answer = answer;
         this.guess = guess;
@@ -64,7 +68,7 @@ public final class GameSession {
         return "GameSession{" + "id='" + id + '\'' + ", state=" + state + ", answer='" + answer + '\'' + ", guesses=" + guesses + ", start=" + start + ", lastSubmissionTimestamp=" + lastSubmissionTimestamp + '}';
     }
 
-    public String id() {
+    public UUID id() {
         return id;
     }
 
@@ -121,7 +125,7 @@ public final class GameSession {
      * Not really mutate since I want to keep {@link GameSession} immutable. I copy over the fields and make changes
      */
     public static class Mutate {
-        String id;
+        UUID id;
         State state;
         String answer;
         String guess;
@@ -131,7 +135,7 @@ public final class GameSession {
         Instant lastSubmissionTimestamp;
         boolean isGameOver;
 
-        public Mutate(String id, State state, String answer, String guess, List<Guess> guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
+        public Mutate(UUID id, State state, String answer, String guess, List<Guess> guesses, SubmitError error, Instant start, Instant lastSubmissionTimestamp, boolean isGameOver) {
             this.id = id;
             this.state = state;
             this.answer = answer;
@@ -147,7 +151,7 @@ public final class GameSession {
             this(s.id, s.state, s.answer, s.guess, s.guesses, s.error, s.start, s.lastSubmissionTimestamp, s.isGameOver);
         }
 
-        public Mutate withId(String id) {
+        public Mutate withId(UUID id) {
             this.id = id;
             return this;
         }

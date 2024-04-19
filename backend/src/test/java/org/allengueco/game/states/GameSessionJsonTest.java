@@ -23,6 +23,7 @@ import org.springframework.boot.test.json.ObjectContent;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,13 +46,14 @@ class GameSessionJsonTest {
 
     @Nested
     public class Serialization {
+        UUID id = UUID.randomUUID();
         List<Guess> g = List.of(
                 new Guess("mandarin", Guess.Position.BEFORE),
                 new Guess("power", Guess.Position.BEFORE),
                 new Guess("base", Guess.Position.AFTER),
                 new Guess("case", Guess.Position.AFTER)
         );
-        GameSession s = new GameSession("1",
+        GameSession s = new GameSession(id,
                 "answer",
                 "guess",
                 GameSession.State.Submit,

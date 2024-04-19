@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class GameService {
@@ -37,7 +38,7 @@ public class GameService {
      * @param guess user's guess
      * @return modified game session if guess is successful, or empty
      */
-    public Optional<GameSession> addGuess(String id, String guess) {
+    public Optional<GameSession> addGuess(UUID id, String guess) {
         GameSession session = gameSessionRepository
                 .findById(id).orElseGet(() -> newGameSession(id));
         if (guess == null || guess.isEmpty() || guess.isBlank()) {
@@ -60,7 +61,7 @@ public class GameService {
         }
     }
 
-    GameSession newGameSession(String id) {
+    GameSession newGameSession(UUID id) {
         log.info("Creating new session with id {}", id);
         GameSession newSession = new GameSession(id,
                 null,
