@@ -21,14 +21,16 @@ jobs:
         with:
           java-version: 'java21'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Run Build with Gradle Wrapper
+        run: ./gradlew build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/backend/build/libs/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
