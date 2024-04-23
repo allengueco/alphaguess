@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 'java21'
+          java-version: '21'
       - run: ./gradlew build --no-daemon 
 
       - name: Upload artifact for deployment job
