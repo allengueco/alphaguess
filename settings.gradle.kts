@@ -5,3 +5,4 @@
 rootProject.name = "betaguess"
 include(":frontend")
 include(":backend")
+

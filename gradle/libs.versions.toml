@@ -4,6 +4,7 @@
 [versions]
 spring-boot = "3.2.3"
 eclipse-collections = "11.1.0"
+node-gradle-version = "7.0.2"
 
 [libraries]
 eclipse-collections = { module = "org.eclipse.collections:eclipse-collections", version.ref = "eclipse-collections" }
@@ -46,3 +47,4 @@ testcontainers = [
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle-version" }

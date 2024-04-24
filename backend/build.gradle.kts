@@ -14,7 +14,6 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
 }
-
 group = "org.allengueco"
 version = "1.0-SNAPSHOT"
 java {
@@ -22,6 +21,7 @@ java {
 }
 
 dependencies {
+    implementation(project(":frontend"))
     implementation(libs.bundles.spring)
     implementation(libs.bundles.eclipse.collections)
     implementation(libs.bundles.jackson)
@@ -42,15 +42,14 @@ tasks {
     }
 
     named<BootBuildImage>("bootBuildImage") {
-
-        imageName.set("agueco.registry.jetbrains.space/p/betaguess/betaguess/backend:${project.version}")
-        publish.set(true)
-
-        docker {
-            publishRegistry {
-                username.set(providers.environmentVariable("BETAGUESS_CLIENT_ID"))
-                password.set(providers.environmentVariable("BETAGUESS_CLIENT_SECRET"))
-            }
-        }
+//        imageName.set("agueco.registry.jetbrains.space/p/betaguess/betaguess/betaguess:${project.version}")
+//        publish.set(true)
+//
+//        docker {
+//            publishRegistry {
+//                username.set(providers.environmentVariable("BETAGUESS_CLIENT_ID"))
+//                password.set(providers.environmentVariable("BETAGUESS_CLIENT_SECRET"))
+//            }
+//        }
     }
 }
