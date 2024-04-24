@@ -60,5 +60,5 @@ jobs:
         with:
           app-name: 'betaguess'
           slot-name: 'Production'
-          package: 'betaguess.jar'
+          package: 'backend-1.0-SNAPSHOT.jar'
           
