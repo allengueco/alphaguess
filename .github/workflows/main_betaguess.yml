@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: betaguess.jar
-          path: '${{ github.workspace }}/backend/build/libs/*.jar'
+          path: '${{ github.workspace }}/backend/build/libs/backend*.jar'
 
   deploy:
     runs-on: ubuntu-latest
