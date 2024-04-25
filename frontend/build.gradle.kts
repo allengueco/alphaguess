@@ -1,4 +1,3 @@
-import com.github.gradle.node.npm.task.NpmInstallTask
 import com.github.gradle.node.npm.task.NpxTask
 
 /*
@@ -10,10 +9,6 @@ description = "frontend"
 plugins {
     java
     alias(libs.plugins.node.gradle)
-}
-
-tasks.named<NpmInstallTask>("npmInstall") {
-
 }
 
 val buildAngular = tasks.register<NpxTask>("buildAngular") {
