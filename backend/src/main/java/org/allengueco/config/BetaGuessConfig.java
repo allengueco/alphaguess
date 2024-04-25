@@ -13,8 +13,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 @Configuration
@@ -24,14 +25,14 @@ public class BetaGuessConfig {
 
     @Bean
     Dictionary englishDictionary(@Value("classpath:dictionary.txt") Resource dictionaryResource) throws IOException {
-        var words = TreeSortedSet.newSet(Files.readAllLines(dictionaryResource.getFile().toPath()));
+        var words = TreeSortedSet.newSet(new BufferedReader(new InputStreamReader(dictionaryResource.getInputStream())).lines().toList());
 
         return new DictionaryImpl(words);
     }
 
     @Bean
     WordSelector wordSelector(Random random, @Value("classpath:valid_words.txt") Resource wordResource) throws IOException {
-        var words = TreeSortedSet.newSet(Files.readAllLines(wordResource.getFile().toPath()));
+        var words = TreeSortedSet.newSet(new BufferedReader(new InputStreamReader(wordResource.getInputStream())).lines().toList());
 
         return new WordSelectorImpl(words, random);
     }
