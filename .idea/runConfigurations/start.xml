@@ -1,10 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="start" type="js.build_tools.npm" nameIsGenerated="true">
-    <package-json value="$PROJECT_DIR$/frontend/src/main/angular/package.json" />
+    <package-json value="$PROJECT_DIR$/frontend/package.json" />
     <command value="run" />
     <scripts>
       <script value="start" />
     </scripts>
+    <arguments value="-o" />
     <node-interpreter value="project" />
     <envs />
     <method v="2" />

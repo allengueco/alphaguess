@@ -8,7 +8,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/betaguess
       - SPRING_DATASOURCE_USERNAME=allengueco
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-    restart: always
   postgres:
     container_name: postgres
     image: postgres:16
@@ -18,7 +17,6 @@ services:
       - POSTGRES_DB=betaguess #optional (specify default database instead of $POSTGRES_DB)
     ports:
       - "5432:5432"
-    restart: always
 
   pgadmin:
     container_name: pgadmin
@@ -28,4 +26,3 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"
-    restart: always

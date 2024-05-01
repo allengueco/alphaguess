@@ -6,13 +6,12 @@ import org.allengueco.game.GameSessionState;
 import org.allengueco.service.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @RestController
@@ -37,5 +36,13 @@ public class StateController {
         return ResponseEntity.of(gameService.addGuess(UUID.fromString(session.getId()), guess)
                 .map(GameSessionState::from));
 
+    }
+
+    @GetMapping(path = "/word-of-the-day")
+    public ResponseEntity<WordOfTheDay> getWordOfTheDay(HttpRequest request) {
+        return null;
+    }
+
+    public record WordOfTheDay(String word, Instant requestTimeStamp) {
     }
 }
