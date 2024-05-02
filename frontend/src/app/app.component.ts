@@ -28,7 +28,6 @@ export class AppComponent {
 
     onSubmit() {
         const guess = this.form.controls.guess.value
-        // TODO: sanitize inputs here
         this.betaGuessService.addGuess(guess)
         this.form.controls.guess.reset("", {onlySelf: true})
     }
