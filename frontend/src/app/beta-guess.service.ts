@@ -1,13 +1,14 @@
-import {inject, Injectable} from "@angular/core";
+import {inject, Injectable, OnInit} from "@angular/core";
 import {WordService} from "./word.service";
 import {SessionService} from "./session.service";
 import {GameSessionSummary} from "./guess-session-summary.model";
 import {DictionaryService} from "./dictionary.service";
+import {filter} from "rxjs";
 
 @Injectable({
     providedIn: "root"
 })
-export class BetaGuessService {
+export class BetaGuessService implements OnInit {
     wordService = inject(WordService);
     sessionService = inject(SessionService);
     dictionaryService = inject(DictionaryService)
@@ -15,7 +16,7 @@ export class BetaGuessService {
 
     private currentWord: string = "";
 
-    constructor() {
+    ngOnInit() {
         this.dictionaryService.randomWord().subscribe(w => this.currentWord = w)
     }
 
@@ -25,22 +26,22 @@ export class BetaGuessService {
 
     addGuess(guess: string) {
         this.dictionaryService.contains(guess)
-            .subscribe(r => {
-                if (r) {
-                    const pos = this.wordService.compare(this.currentWord, guess)
-                    switch (pos) {
-                        case 'before':
-                        case 'after':
-                            this._summary.guesses[pos].push(guess)
-                            this._summary.guesses[pos].sort()
-                            this.updateWordHints()
-                            break
-                        case 'equal':
-                            this._summary.isGameOver = true
-                    }
-
-                    this.sessionService.update(this._summary)
+            .pipe(filter(d => d))
+            .subscribe(_ => {
+                const pos = this.wordService.compare(this.currentWord, guess)
+                switch (pos) {
+                    case 'before':
+                    case 'after':
+                        this._summary.guesses[pos].push(guess)
+                        this._summary.guesses[pos].sort()
+                        this.updateWordHints()
+                        break
+                    case 'equal':
+                        this._summary.isGameOver = true
                 }
+
+                this.sessionService.update(this._summary)
+
             })
     }
 
