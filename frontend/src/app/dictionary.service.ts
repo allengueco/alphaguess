@@ -1,7 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Trie} from "@kamilmielnik/trie";
-import {map, Observable, shareReplay} from "rxjs";
+import {map, Observable, shareReplay, tap} from "rxjs";
 
 @Injectable({providedIn: "root"})
 export class DictionaryService {
@@ -16,7 +16,10 @@ export class DictionaryService {
     }
 
     randomWord() {
-        return this.validWords.pipe(map(w => w[Math.floor(Math.random()) * w.length]))
+        return this.validWords.pipe(
+            map(w => w[Math.floor(Math.random() * w.length)]),
+            tap(console.debug)
+        )
     }
 
     private readFromFile(filePath: string): Observable<string> {

@@ -3,7 +3,6 @@ import {WordService} from "./word.service";
 import {SessionService} from "./session.service";
 import {GameSessionSummary} from "./guess-session-summary.model";
 import {DictionaryService} from "./dictionary.service";
-import {tap} from "rxjs";
 
 @Injectable({
     providedIn: "root"
@@ -17,7 +16,7 @@ export class BetaGuessService {
     private currentWord: string = "";
 
     constructor() {
-        this.dictionaryService.randomWord().pipe(tap(console.log)).subscribe(w => this.currentWord = w)
+        this.dictionaryService.randomWord().subscribe(w => this.currentWord = w)
     }
 
     currentGame() {
