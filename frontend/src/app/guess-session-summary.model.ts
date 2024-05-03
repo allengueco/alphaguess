@@ -4,9 +4,5 @@ export type GameSessionSummary = {
         before: string[]
     }
     isGameOver: boolean,
-    lastSubmissionTimestamp: string,
-    hints: {
-        letters: string,
-        index: number
-    }
+    startTime: string
 }

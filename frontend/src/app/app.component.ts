@@ -1,10 +1,10 @@
-import {ChangeDetectionStrategy, Component, inject,} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, Signal,} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {BetaGuessService} from "./beta-guess.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {GameSessionSummary} from "./guess-session-summary.model";
-import {Observable} from 'rxjs';
+import {Hint} from "./hint.model";
 
 @Component({
     selector: 'app-root',
@@ -15,8 +15,10 @@ import {Observable} from 'rxjs';
 })
 export class AppComponent {
     betaGuessService = inject(BetaGuessService);
-    title = 'betaguess';
-    submitResult: Observable<GameSessionSummary> = this.betaGuessService.currentGame();
+    submitResult: Signal<GameSessionSummary> = this.betaGuessService.currentGame()
+    before: Signal<string[]> = computed(() => this.submitResult().guesses.before)
+    after: Signal<string[]> = computed(() => this.submitResult().guesses.after)
+    hints: Signal<Hint> = this.betaGuessService.currentHints()
 
     form = new FormGroup(
         {
@@ -32,7 +34,7 @@ export class AppComponent {
         this.form.controls.guess.reset("", {onlySelf: true})
     }
 
-    reset() {
-        this.betaGuessService.reset()
+    giveUp() {
+        this.betaGuessService.giveUp()
     }
 }

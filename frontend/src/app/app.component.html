@@ -1,34 +1,35 @@
 <div class="h-screen w-screen flex flex-col items-center">
-    <h1 class="text-black font-medium text-6xl pt-16 pb-20">{{ title }}</h1>
-    @if (submitResult | async; as result) {
-        <h1 class="text-4xl">Words After:</h1>
-        <div class="pb-5 text-3xl">
-            @for (g of result.guesses.after; track $index) {
-                @if ($last) {
-                    <h2>
-                        <a
-                                class="underline text-emerald-700 decoration-emerald-400">{{ result.hints.letters }}</a>{{ g.substring(result.hints.index) }}
-                    </h2>
-                } @else {
-                    <h2>{{ g }}</h2>
-                }
+    <h1 class="text-black font-medium text-6xl pt-16 pb-20">betaguess</h1>
+
+    <h1 class="text-4xl">Words After:</h1>
+    <div class="pb-5 text-3xl">
+        @for (g of after(); track $index) {
+            @if ($last) {
+                <h2>
+                    <a class="underline text-emerald-700 decoration-emerald-400">{{ hints().letters }}</a>{{ g.substring(hints().index) }}
+                </h2>
+            } @else {
+                <h2>{{ g }}</h2>
             }
-        </div>
-        <!--        @if (result.error; as err) {-->
-                <!--            <div class="rounded box-border h-32 w-48 pb-5 text-center content-center bg-red-400 text-white text-xl">-->
-                <!--                @switch (err) {-->
-                <!--                    @case ("ALREADY_GUESSED") {-->
-                <!--                        <h1>Already guessed</h1>-->
-                <!--                    }-->
-                <!--                    @case ("INVALID_WORD") {-->
-                <!--                        <h1>Word is invalid</h1>-->
-                <!--                    }-->
-                <!--                }-->
-                <!--            </div>-->
-                <!--        }-->
-        <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-row">
-            <input
-                    class="shadow
+        }
+    </div>
+    <!--        @if (result.error; as err) {-->
+    <!--            <div class="rounded box-border h-32 w-48 pb-5 text-center content-center bg-red-400 text-white text-xl">-->
+    <!--                @switch (err) {-->
+    <!--                    @case ("ALREADY_GUESSED") {-->
+    <!--                        <h1>Already guessed</h1>-->
+    <!--                    }-->
+    <!--                    @case ("INVALID_WORD") {-->
+    <!--                        <h1>Word is invalid</h1>-->
+    <!--                    }-->
+    <!--                }-->
+    <!--            </div>-->
+    <!--        }-->
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-row">
+        <input
+                autocomplete="off"
+                autofocus
+                class="shadow
         appearance-none
         border rounded
         py-2 px-3
@@ -36,35 +37,33 @@
         text-gray-700 leading-tight
         focus:outline-none
         focus:shadow-outline"
-                    autofocus
-                    formControlName="guess"
-                    id="username">
-            <button
-                    [disabled]="form.errors"
-                    class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded">
-                Guess
-            </button>
-        </form>
-        @if (result.isGameOver) {
-            <h1 class="text-7xl m-4">SLAY QUEEN</h1>
-            <button
-                    (click)="reset()"
-                    class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded">
-                Reset
-            </button>
-        }
-        <div class="pt-5 text-3xl">
-            @for (g of result.guesses.before; track $index) {
-                @if ($first) {
-                    <h2>
-                        <a
-                                class="underline text-emerald-700 decoration-emerald-400">{{ result.hints.letters }}</a>{{ g.substring(result.hints.index) }}
-                    </h2>
-                } @else {
-                    <h2>{{ g }}</h2>
-                }
-            }
-        </div>
-        <h1 class="text-4xl">Words Before:</h1>
+                formControlName="guess"
+                id="username">
+        <button
+                [disabled]="form.errors"
+                class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded">
+            Guess
+        </button>
+        <button
+                (click)="giveUp()"
+                class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded">
+            Give up
+        </button>
+    </form>
+    @if (submitResult().isGameOver) {
+        <h1 class="text-7xl m-4">NOICE</h1>
     }
+    <div class="pt-5 text-3xl">
+        @for (g of before(); track $index) {
+            @if ($first) {
+                <h2>
+                    <a class="underline text-emerald-700 decoration-emerald-400">{{ hints().letters }}</a>{{ g.substring(hints().index) }}
+                </h2>
+            } @else {
+                <h2>{{ g }}</h2>
+            }
+        }
+    </div>
+    <h1 class="text-4xl">Words Before:</h1>
+
 </div>

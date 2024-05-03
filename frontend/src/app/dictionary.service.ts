@@ -1,28 +1,18 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Trie} from "@kamilmielnik/trie";
-import {map, Observable, shareReplay, tap} from "rxjs";
 
 @Injectable({providedIn: "root"})
 export class DictionaryService {
     http = inject(HttpClient)
     private dictionaryFp: string = "assets/d.txt"
-    private validFp: string = "assets/valid_words.txt"
-    private dictionary: Observable<Trie> = this.readFromFile(this.dictionaryFp).pipe(map(Trie.deserialize), shareReplay());
-    private validWords: Observable<string[]> = this.readFromFile(this.validFp).pipe(map(w => w.split("\r\n")), shareReplay());
+    private dictionary!: Trie;
+
+    constructor() {
+        this.http.get(this.dictionaryFp, {responseType: 'text'}).subscribe(res => this.dictionary = Trie.deserialize(res))
+    }
 
     contains(guess: string) {
-        return this.dictionary.pipe(map(d => d.has(guess)))
-    }
-
-    randomWord() {
-        return this.validWords.pipe(
-            map(w => w[Math.floor(Math.random() * w.length)]),
-            tap(console.debug)
-        )
-    }
-
-    private readFromFile(filePath: string): Observable<string> {
-        return this.http.get(filePath, {responseType: 'text'});
+        return this.dictionary.has(guess)
     }
 }

@@ -1,59 +1,65 @@
-import {inject, Injectable, OnInit} from "@angular/core";
+import {computed, inject, Injectable, signal} from "@angular/core";
 import {WordService} from "./word.service";
 import {SessionService} from "./session.service";
-import {GameSessionSummary} from "./guess-session-summary.model";
 import {DictionaryService} from "./dictionary.service";
-import {filter} from "rxjs";
+import {Hint} from "./hint.model";
 
 @Injectable({
     providedIn: "root"
 })
-export class BetaGuessService implements OnInit {
+export class BetaGuessService {
     wordService = inject(WordService);
     sessionService = inject(SessionService);
     dictionaryService = inject(DictionaryService)
-    private _summary: GameSessionSummary = this.sessionService.currentSessionOrDefault()
+    readonly summary = signal(this.sessionService.currentGameOrDefault())
+    readonly hints = signal({letters: "", index: -1} as Hint)
+    private currentWord = computed(() => this.wordService.wordOfTheDay(
+        new Date(this.summary().startTime || Date.now())));
 
-    private currentWord: string = "";
+    constructor() {
 
-    ngOnInit() {
-        this.dictionaryService.randomWord().subscribe(w => this.currentWord = w)
     }
 
     currentGame() {
-        return this.sessionService.currentGame()
+        return this.summary
+    }
+
+    currentHints() {
+        return this.hints
     }
 
     addGuess(guess: string) {
-        this.dictionaryService.contains(guess)
-            .pipe(filter(d => d))
-            .subscribe(_ => {
-                const pos = this.wordService.compare(this.currentWord, guess)
-                switch (pos) {
-                    case 'before':
-                    case 'after':
-                        this._summary.guesses[pos].push(guess)
-                        this._summary.guesses[pos].sort()
-                        this.updateWordHints()
-                        break
-                    case 'equal':
-                        this._summary.isGameOver = true
-                }
-
-                this.sessionService.update(this._summary)
-
-            })
+        const alreadyGuessed = this.summary().guesses.after.includes(guess) || this.summary().guesses.before.includes(guess)
+        const isNotValidWord = !this.dictionaryService.contains(guess)
+        if (alreadyGuessed || isNotValidWord) return
+        const pos = this.wordService.compare(this.currentWord(), guess)
+        switch (pos) {
+            case 'before':
+            case 'after':
+                this.summary.update(s => {
+                    const items = s.guesses[pos]
+                    items.push(guess)
+                    items.sort()
+                    s.startTime ||= new Date().toString()
+                    return s
+                })
+                this.hints.update(_ => this.updateWordHints())
+                break;
+            case 'equal':
+                this.summary.update(s => ({...s, isGameOver: true}))
+        }
+        this.sessionService.update(this.summary())
     }
 
-    reset() {
+    giveUp() {
         this.sessionService.reset();
-        this.dictionaryService.randomWord().subscribe(w => this.currentWord = w)
+        this.currentWord = computed(() => this.wordService.randomWord())
     }
 
-    updateWordHints() {
-        const afterLength = this._summary.guesses.after.length;
-        const top = this._summary.guesses.after[afterLength - 1] ?? '';
-        const bottom = this._summary.guesses.before[0] ?? '';
+    updateWordHints(): Hint {
+        const afterLength = this.summary().guesses.after.length;
+        const top = this.summary().guesses.after[afterLength - 1] ?? '';
+        const bottom = this.summary().guesses.before[0] ?? '';
 
         const l = Math.min(top.length, bottom.length);
 
@@ -68,6 +74,6 @@ export class BetaGuessService implements OnInit {
                 break
             }
         }
-        this._summary.hints = {letters, index}
+        return {letters, index}
     }
 }
