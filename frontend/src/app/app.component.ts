@@ -20,6 +20,7 @@ export class AppComponent {
     after: Signal<string[]> = computed(() => this.submitResult().guesses.after)
     hints: Signal<Hint> = this.betaGuessService.currentHints()
 
+
     form = new FormGroup(
         {
             guess: new FormControl("", {
@@ -36,5 +37,9 @@ export class AppComponent {
 
     giveUp() {
         this.betaGuessService.giveUp()
+    }
+
+    getSuccessMessage() {
+        return this.betaGuessService.getSuccessMessage()
     }
 }

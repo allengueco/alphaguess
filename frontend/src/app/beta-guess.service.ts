@@ -56,6 +56,10 @@ export class BetaGuessService {
         this.currentWord = computed(() => this.wordService.randomWord())
     }
 
+    getSuccessMessage() {
+        return this.wordService.randomSuccessMessage()
+    }
+
     updateWordHints(): Hint {
         const afterLength = this.summary().guesses.after.length;
         const top = this.summary().guesses.after[afterLength - 1] ?? '';
