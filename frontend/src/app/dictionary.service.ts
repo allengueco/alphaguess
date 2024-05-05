@@ -9,7 +9,9 @@ export class DictionaryService {
     private dictionary!: Trie;
 
     constructor() {
-        this.http.get(this.dictionaryFp, {responseType: 'text'}).subscribe(res => this.dictionary = Trie.deserialize(res))
+        this.http.get(this.dictionaryFp, {responseType: 'text'})
+            .subscribe(res =>
+                this.dictionary = Trie.deserialize(res))
     }
 
     contains(guess: string) {
