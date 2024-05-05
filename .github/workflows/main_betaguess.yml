@@ -27,7 +27,7 @@ jobs:
       #      - run: npm test
 
       - name: Build project
-        run: npm run build --configuration=production --base-href=http://${{GITHUB_REPOSITORY_OWNER}}.github.io/${{GITHUB_REPOSITORY}}
+        run: npm run build --configuration=production --base-href=http://${{GITHUB_REPOSITORY_OWNER}}.github.io/betaguess
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
