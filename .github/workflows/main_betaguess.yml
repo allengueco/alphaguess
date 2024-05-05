@@ -1,7 +1,5 @@
 name: Build and deploy betaguess
-defaults:
-  run:
-    working-directory: ./frontend
+
 on:
   push:
     branches:
@@ -11,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
     outputs:
       dist: ${{ steps.dist-artifact-upload.outputs.artifact-id }}
 
