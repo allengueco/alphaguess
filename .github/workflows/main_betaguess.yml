@@ -1,7 +1,7 @@
 name: Build and deploy betaguess
 defaults:
   run:
-    working-directory: frontend
+    working-directory: ./frontend
 on:
   push:
     branches:
