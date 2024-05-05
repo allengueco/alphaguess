@@ -3,6 +3,7 @@ import {WordService} from "./word.service";
 import {SessionService} from "./session.service";
 import {DictionaryService} from "./dictionary.service";
 import {Hint} from "./hint.model";
+import {GameSessionSummary} from "./guess-session-summary.model";
 
 @Injectable({
     providedIn: "root"
@@ -12,7 +13,7 @@ export class BetaGuessService {
     sessionService = inject(SessionService);
     dictionaryService = inject(DictionaryService)
     readonly summary = signal(this.sessionService.currentGameOrDefault())
-    readonly hints = signal({letters: "", index: -1} as Hint)
+    readonly hints = computed(() => this.updateWordHints(this.summary()))
     private currentWord = computed(() => this.wordService.wordOfTheDay(
         new Date(this.summary().startTime || Date.now())));
 
@@ -43,7 +44,6 @@ export class BetaGuessService {
                     s.startTime ||= new Date().toString()
                     return s
                 })
-                this.hints.update(_ => this.updateWordHints())
                 break;
             case 'equal':
                 this.summary.update(s => ({...s, isGameOver: true}))
@@ -60,10 +60,10 @@ export class BetaGuessService {
         return this.wordService.randomSuccessMessage()
     }
 
-    updateWordHints(): Hint {
-        const afterLength = this.summary().guesses.after.length;
-        const top = this.summary().guesses.after[afterLength - 1] ?? '';
-        const bottom = this.summary().guesses.before[0] ?? '';
+    updateWordHints(summary: GameSessionSummary): Hint {
+        const afterLength = summary.guesses.after.length;
+        const top = summary.guesses.after[afterLength - 1] ?? '';
+        const bottom = summary.guesses.before[0] ?? '';
 
         const l = Math.min(top.length, bottom.length);
 

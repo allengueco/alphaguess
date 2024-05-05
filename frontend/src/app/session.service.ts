@@ -3,14 +3,15 @@ import {GameSessionSummary} from "./guess-session-summary.model";
 
 @Injectable({providedIn: "root"})
 export class SessionService {
-    private KEY = "session"
+    private SESSION = "session"
+    private HINT = "hint"
 
     update(summary: GameSessionSummary) {
-        localStorage.setItem(this.KEY, JSON.stringify(summary));
+        localStorage.setItem(this.SESSION, JSON.stringify(summary));
     }
 
     reset() {
-        localStorage.removeItem(this.KEY)
+        localStorage.removeItem(this.SESSION)
     }
 
     emptySummary(): GameSessionSummary {
@@ -25,7 +26,7 @@ export class SessionService {
     }
 
     currentGameOrDefault(): GameSessionSummary {
-        const currentSession = localStorage.getItem(this.KEY)
+        const currentSession = localStorage.getItem(this.SESSION)
         return currentSession == null ? this.emptySummary() : JSON.parse(currentSession)
     }
 }

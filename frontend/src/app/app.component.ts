@@ -5,11 +5,12 @@ import {BetaGuessService} from "./beta-guess.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {GameSessionSummary} from "./guess-session-summary.model";
 import {Hint} from "./hint.model";
+import {GuessListComponent} from "./guess-list.component";
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, ReactiveFormsModule],
+    imports: [CommonModule, RouterOutlet, ReactiveFormsModule, GuessListComponent],
     templateUrl: './app.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
