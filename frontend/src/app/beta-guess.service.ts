@@ -13,7 +13,7 @@ export class BetaGuessService {
     sessionService = inject(SessionService);
     dictionaryService = inject(DictionaryService)
     readonly summary = signal(this.sessionService.currentGameOrDefault())
-    readonly hints = computed(() => this.updateWordHints(this.summary()))
+    hints = computed(() => this.updateWordHints(this.summary()))
     private currentWord = computed(() => this.wordService.wordOfTheDay(
         new Date(this.summary().startTime || Date.now())));
 
@@ -53,7 +53,6 @@ export class BetaGuessService {
 
     giveUp() {
         this.sessionService.reset();
-        this.currentWord = computed(() => this.wordService.randomWord())
     }
 
     getSuccessMessage() {
@@ -61,6 +60,7 @@ export class BetaGuessService {
     }
 
     updateWordHints(summary: GameSessionSummary): Hint {
+        console.log("$$$$")
         const afterLength = summary.guesses.after.length;
         const top = summary.guesses.after[afterLength - 1] ?? '';
         const bottom = summary.guesses.before[0] ?? '';
