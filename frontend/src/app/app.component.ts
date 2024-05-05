@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, Signal,} from '@angular/core';
+import {Component, computed, inject, Signal,} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {BetaGuessService} from "./beta-guess.service";
@@ -11,16 +11,14 @@ import {GuessListComponent} from "./guess-list.component";
     selector: 'app-root',
     standalone: true,
     imports: [CommonModule, RouterOutlet, ReactiveFormsModule, GuessListComponent],
-    templateUrl: './app.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './app.component.html'
 })
 export class AppComponent {
     betaGuessService = inject(BetaGuessService);
-    submitResult: Signal<GameSessionSummary> = this.betaGuessService.currentGame()
+    submitResult: Signal<GameSessionSummary> = this.betaGuessService.summary
     before: Signal<string[]> = computed(() => this.submitResult().guesses.before)
     after: Signal<string[]> = computed(() => this.submitResult().guesses.after)
-    hints: Signal<Hint> = this.betaGuessService.currentHints()
-
+    hints: Signal<Hint> = computed(() => this.updateWordHints(this.submitResult()))
 
     form = new FormGroup(
         {
@@ -40,7 +38,24 @@ export class AppComponent {
         this.betaGuessService.giveUp()
     }
 
-    getSuccessMessage() {
-        return this.betaGuessService.getSuccessMessage()
+    updateWordHints(summary: GameSessionSummary): Hint {
+        const afterLength = summary.guesses.after.length;
+        const top = summary.guesses.after[afterLength - 1] ?? '';
+        const bottom = summary.guesses.before[0] ?? '';
+
+        const l = Math.min(top.length, bottom.length);
+
+        let letters = '';
+        let index = 0;
+
+        for (let i = index; i < l; i++) {
+            if (top.charAt(i) === bottom.charAt(i)) {
+                letters += top.charAt(i);
+                index++
+            } else {
+                break
+            }
+        }
+        return {letters, index}
     }
 }

@@ -1,9 +1,9 @@
-<div class="h-screen w-screen flex flex-col items-center">
-    <h1 class="text-black font-medium text-6xl pt-16 pb-20">betaguess</h1>
-
-    <h1 class="text-4xl">Words After:</h1>
+<div class="h-screen w-screen flex flex-col items-center space-y-2">
+    <h1 class="text-6xl text-black font-medium pt-16 pb-20">betaguess</h1>
+    <h1 class="text"></h1>
+    <h1 class="text-4xl">After:</h1>
     <app-guess-list [guesses]="after()" [hints]="hints()" position="last"></app-guess-list>
-    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-row">
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-row space-x-4">
         <input
                 autocomplete="off"
                 autofocus
@@ -16,20 +16,36 @@
                 formControlName="guess"
                 id="username">
         <button
-                [disabled]="form.errors"
-                class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded">
-            Guess
+                class="shadow
+                    bg-orange-500
+                    hover:bg-orange-400
+                    focus:shadow-outline
+                    focus:outline-none
+                    text-white
+                    font-bold
+                    py-2
+                    px-3
+                    rounded"
+                type="submit">Guess
         </button>
         <button
                 (click)="giveUp()"
-                class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded">
-            Give up?
+                class="shadow
+                    bg-orange-500
+                    hover:bg-orange-400
+                    focus:shadow-outline
+                    focus:outline-none
+                    text-white
+                    font-bold
+                    py-2
+                    px-3
+                    rounded">Give up?
         </button>
     </form>
     @if (submitResult().isGameOver) {
-        <h1 class="text-7xl m-4">{{ getSuccessMessage() }}</h1>
+        <h1 class="text-7xl m-4">Yay</h1>
     }
     <app-guess-list [guesses]="before()" [hints]="hints()" position="first"></app-guess-list>
-    <h1 class="text-4xl">Words Before:</h1>
+    <h1 class="text-4xl">Before:</h1>
 
 </div>

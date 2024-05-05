@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, input} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {Hint} from "./hint.model";
 
 @Component({
@@ -6,8 +6,8 @@ import {Hint} from "./hint.model";
     standalone: true,
     imports: [],
     template: `
-        <div class="text-3xl">
-            @for (g of guesses(); track $index) {
+        <div class="flex flex-col text-3xl items-center">
+            @for (g of guesses(); track g) {
                 @if (highlight($first, $last)) {
                     <h2>
                         <a class="underline text-emerald-700 decoration-emerald-400">{{ hints().letters }}</a>{{ g.substring(hints().index) }}
@@ -17,8 +17,7 @@ import {Hint} from "./hint.model";
                 }
             }
         </div>
-    `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    `
 })
 export class GuessListComponent {
     guesses = input.required<string[]>();

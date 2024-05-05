@@ -7,9 +7,7 @@ import {HttpClient} from "@angular/common/http";
 export class WordService {
     http = inject(HttpClient)
     validWordsTxt = "assets/vw.txt"
-    successTxt = "assets/success.txt"
     validWords: string[] = [];
-    successWords: string[] = [];
     readonly startDate: Date = new Date(2024, 0, 0) //jan 1st
     readonly startOffset: number = 1337;
 
@@ -17,11 +15,6 @@ export class WordService {
         this.http.get(this.validWordsTxt, {responseType: 'text'})
             .subscribe(res =>
                 this.validWords = res.split("\r\n")
-            )
-
-        this.http.get(this.validWordsTxt, {responseType: 'text'})
-            .subscribe(res =>
-                this.successWords = res.split("\r\n")
             )
     }
 
@@ -59,10 +52,6 @@ export class WordService {
 
         console.log(`chosen word: ${chosen}`)
         return chosen
-    }
-
-    randomSuccessMessage() {
-        return this.successWords[Math.floor(Math.random() * this.successTxt.length)]
     }
 
     /**
