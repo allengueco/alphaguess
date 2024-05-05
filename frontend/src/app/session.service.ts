@@ -4,7 +4,19 @@ import {GameSessionSummary} from "./guess-session-summary.model";
 @Injectable({providedIn: "root"})
 export class SessionService {
     private SESSION = "session"
-    private HINT = "hint"
+
+    constructor() {
+        const currentSession = localStorage.getItem(this.SESSION)
+        if (currentSession) {
+            const today = new Date()
+            const sessionStartDate = new Date(JSON.parse(currentSession).startTime)
+
+            if (today.getDay() != sessionStartDate.getDay()) {
+                console.log(`Removing old session...`)
+                this.reset()
+            }
+        }
+    }
 
     update(summary: GameSessionSummary) {
         localStorage.setItem(this.SESSION, JSON.stringify(summary));
