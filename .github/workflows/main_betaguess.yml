@@ -32,23 +32,22 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'frontend/build'
+          path: 'frontend/build/browser'
 
-#
-#  deploy:
-#    runs-on: ubuntu-latest
-#    needs: build
-#
-#    permissions:
-#      pages: write
-#      id-token: write
-#
-#    environment:
-#      name: github-pages
-#      url: ${{ steps.deployment.outputs.page_url }}
-#
-#    steps:
-#      - name: Deploy to GitHug Pages
-#        id: deployment
-#        uses: actions/deploy-pages@v4
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHug Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
