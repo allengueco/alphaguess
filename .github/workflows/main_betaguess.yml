@@ -34,7 +34,7 @@ jobs:
         id: dist-artifact-upload
         with:
           name: github-pages
-          path: 'build'
+          path: 'frontend/build'
 
 #
 #  deploy:
