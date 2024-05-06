@@ -14,7 +14,7 @@ export class WordService {
     constructor() {
         this.http.get(this.validWordsTxt, {responseType: 'text'})
             .subscribe(res =>
-                this.validWords = res.split("\n")
+                this.validWords = res.split("\r\n")
             )
     }
 
