@@ -1,22 +1,20 @@
 <div class="h-screen w-screen flex flex-col items-center space-y-2">
     <h1 class="text-6xl text-black font-medium pt-16 pb-20">betaguess</h1>
-    <h1 class="text"></h1>
     <h1 class="text-4xl">After:</h1>
     <app-guess-list [guesses]="after()" [hints]="hints()" position="last"></app-guess-list>
-    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-row space-x-4">
-        <input
-                autocomplete="off"
-                autofocus
-                class="shadow
+    <form (ngSubmit)="onSubmit(guessForm)" #guessForm="ngForm" [ngFormOptions]="{updateOn:'submit'}"
+        class="flex flex-row space-x-4">
+        <input autocomplete="off" #guessControl="ngModel" autofocus class="shadow
                     appearance-none
-                    border rounded
-                    text-gray-700 leading-tight
+                    border 
+                    rounded
+                    p-2
+                    text-gray-700 
+                    leading-tight
                     focus:outline-none
-                    focus:shadow-outline"
-                formControlName="guess"
-                id="username">
-        <button
-                class="shadow
+                    focus:shadow-outline" placeholder="Guess..." pattern="\w+" [(ngModel)]="guess" name="guess"
+            [guessValidator]="summary()" id="guess">
+        <button class="shadow
                     bg-orange-500
                     hover:bg-orange-400
                     focus:shadow-outline
@@ -25,12 +23,9 @@
                     font-bold
                     py-2
                     px-3
-                    rounded"
-                type="submit">Guess
+                    rounded" type="submit">Guess
         </button>
-        <button
-                (click)="giveUp()"
-                class="shadow
+        <button (click)="giveUp()" class="shadow
                     bg-orange-500
                     hover:bg-orange-400
                     focus:shadow-outline
@@ -42,8 +37,23 @@
                     rounded">Give up?
         </button>
     </form>
-    @if (submitResult().isGameOver) {
-        <h1 class="text-7xl m-4">Yay</h1>
+    @if (guessControl.errors) {
+        <div class="mx-auto bg-red-100 border shadow border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
+            @if (guessControl.hasError('pattern')) {
+                <strong class="font-bold">Invalid Guess. </strong>
+                <span class="sm:inline">Must contain one word, no spaces.</span>
+            }
+            @else if (guessControl.hasError('isInvalidWord')) {
+                <strong class="font-bold">Invalid Word. </strong>
+                <span class="sm:inline">Guess must be Scrabble-accepted.</span>
+            }
+            @else if (guessControl.hasError('alreadyGuessed')) {
+                <strong class="font-bold">Already Guessed.</strong>
+            }
+        </div>
+    }
+    @if (summary().isGameOver) {
+    <h1 class="text-7xl m-4">Yay</h1>
     }
     <app-guess-list [guesses]="before()" [hints]="hints()" position="first"></app-guess-list>
     <h1 class="text-4xl">Before:</h1>

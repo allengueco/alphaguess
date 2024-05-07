@@ -1,21 +1,24 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
+import { firstValueFrom, map } from "rxjs";
 
 @Injectable({
     providedIn: "root"
 })
 export class WordService {
     http = inject(HttpClient)
-    validWordsTxt = "assets/vw.txt"
-    validWords: string[] = [];
+    private readonly WORDS_URL = "assets/vw.txt"
+    private validWords: string[] = [];
     readonly startDate: Date = new Date(2024, 0, 0) //jan 1st
     readonly startOffset: number = 1337;
 
-    constructor() {
-        this.http.get(this.validWordsTxt, {responseType: 'text'})
-            .subscribe(res =>
-                this.validWords = res.split("\r\n")
-            )
+    init() {
+        return firstValueFrom(this.http.get(this.WORDS_URL, {responseType: 'text'}))
+        .then(res => {
+            this.validWords = res.split("\n")
+            return this.validWords
+        })
+        .catch(console.error)
     }
 
     /**

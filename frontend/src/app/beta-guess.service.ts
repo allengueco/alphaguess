@@ -11,20 +11,11 @@ export class BetaGuessService {
     sessionService = inject(SessionService);
     dictionaryService = inject(DictionaryService)
     readonly summary = signal(this.sessionService.currentGameOrDefault())
+    private startTime = signal(this.summary().startTime)
     private currentWord = computed(() => this.wordService.wordOfTheDay(
-        new Date(this.summary().startTime || Date.now())));
-
-    constructor() {
-        
-    }
+        new Date(this.startTime() || Date.now())));
 
     addGuess(guess: string) {
-        const isValidWord = this.dictionaryService.contains(guess)
-        const alreadyGuessed = this.summary().guesses.after.includes(guess) || this.summary().guesses.before.includes(guess)
-        if (isValidWord || alreadyGuessed) {
-            console.log(`Invalid word: ${guess}`)
-            return
-        }
         const pos = this.wordService.compare(this.currentWord(), guess)
         switch (pos) {
             case 'before':

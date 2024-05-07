@@ -1,38 +1,36 @@
-import {Component, computed, inject, Signal,} from '@angular/core';
+import {Component, computed, inject, signal, Signal,} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {BetaGuessService} from "./beta-guess.service";
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, NgForm} from "@angular/forms";
 import {GameSessionSummary} from "./guess-session-summary.model";
 import {Hint} from "./hint.model";
 import {GuessListComponent} from "./guess-list.component";
+import { GuessValidatorDirective } from './guess-validator.directive';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, ReactiveFormsModule, GuessListComponent],
+    imports: [CommonModule, RouterOutlet, FormsModule, GuessListComponent, GuessValidatorDirective],
     templateUrl: './app.component.html'
 })
 export class AppComponent {
     betaGuessService = inject(BetaGuessService);
-    submitResult: Signal<GameSessionSummary> = this.betaGuessService.summary
-    before: Signal<string[]> = computed(() => this.submitResult().guesses.before)
-    after: Signal<string[]> = computed(() => this.submitResult().guesses.after)
-    hints: Signal<Hint> = computed(() => this.updateWordHints(this.submitResult()))
+    summary: Signal<GameSessionSummary> = this.betaGuessService.summary
+    before: Signal<string[]> = computed(() => this.summary().guesses.before)
+    after: Signal<string[]> = computed(() => this.summary().guesses.after)
+    hints: Signal<Hint> = computed(() => this.updateWordHints(this.summary()))
 
-    form = new FormGroup(
-        {
-            guess: new FormControl("", {
-                nonNullable: true,
-                validators: [Validators.required]
-            })
-        });
-
-    onSubmit() {
-        const guess = this.form.controls.guess.value
-        this.betaGuessService.addGuess(guess)
-        this.form.controls.guess.reset("", {onlySelf: true})
+    guess = signal<string>('')
+    sanitizedGuess = computed(() => this.sanitized(this.guess()))
+    
+    onSubmit(guessForm: NgForm) {
+        if (!guessForm.form.controls['guess'].errors) {
+            this.betaGuessService.addGuess(this.sanitizedGuess())
+        }
+        this.guess.set('')
     }
+
 
     giveUp() {
         this.betaGuessService.giveUp()
@@ -57,5 +55,9 @@ export class AppComponent {
             }
         }
         return {letters, index}
+    }
+    
+    private sanitized(guess: string) {
+        return guess.toLowerCase()
     }
 }
