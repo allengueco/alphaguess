@@ -10,12 +10,8 @@ export class DictionaryService {
     private dictionary!: Trie;
 
     init() {
-        return firstValueFrom(this.http.get(this.DICTIONARY_URL, {responseType: 'text'}))
-            .then(res => {
-                this.dictionary = Trie.deserialize(res)
-                return this.dictionary
-            })
-            .catch(console.error)
+        return this.http.get(this.DICTIONARY_URL, {responseType: 'text'})
+            .subscribe(res => this.dictionary = Trie.deserialize(res))
     }
 
     contains(guess: string) {

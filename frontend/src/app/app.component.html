@@ -1,17 +1,20 @@
-<div class="h-screen w-screen flex flex-col items-center space-y-2">
-    <h1 class="text-6xl text-black font-medium pt-16 pb-20">betaguess</h1>
+<div class="container mx-auto px-96 h-screen w-screen flex flex-col items-center space-y-2">
+    <h1 class="text-6xl text-black font-medium pt-16">betaguess</h1>
+    <h2 class="text-2xl text-black italic font-normal">Guess the word of the day. Your guesses will show where the word sits alphabetically.</h2>
     <h1 class="text-4xl">After:</h1>
     <app-guess-list [guesses]="after()" [hints]="hints()" position="last"></app-guess-list>
     <form (ngSubmit)="onSubmit(guessForm)" #guessForm="ngForm" [ngFormOptions]="{updateOn:'submit'}"
         class="flex flex-row space-x-4">
         <input autocomplete="off" #guessControl="ngModel" autofocus class="shadow
                     appearance-none
-                    border 
+                    border
                     rounded
                     p-2
-                    text-gray-700 
+                    text-gray-700
                     leading-tight
                     focus:outline-none
+                    placeholder:tracking-wide
+                    placeholder:italic
                     focus:shadow-outline" placeholder="Guess..." pattern="\w+" [(ngModel)]="guess" name="guess"
             [guessValidator]="summary()" id="guess">
         <button class="shadow

@@ -13,12 +13,8 @@ export class WordService {
     readonly startOffset: number = 1337;
 
     init() {
-        return firstValueFrom(this.http.get(this.WORDS_URL, {responseType: 'text'}))
-        .then(res => {
-            this.validWords = res.split("\n")
-            return this.validWords
-        })
-        .catch(console.error)
+        this.http.get(this.WORDS_URL, {responseType: 'text'})
+            .subscribe(res => this.validWords = res.split("\n"))
     }
 
     /**
