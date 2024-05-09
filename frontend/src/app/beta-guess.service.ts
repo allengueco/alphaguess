@@ -24,8 +24,9 @@ export class BetaGuessService {
                     const items = s.guesses[pos]
                     items.push(guess)
                     items.sort()
+                    const guesses = {...s.guesses}
                     const startTime = s.startTime ||= new Date().toString()
-                    return {...s, startTime}
+                    return {...s, guesses, startTime}
                 })
                 break;
             case 'equal':

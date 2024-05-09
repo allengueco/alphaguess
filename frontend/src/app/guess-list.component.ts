@@ -1,14 +1,13 @@
-import {Component, computed, input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, effect, input, model} from '@angular/core';
 import {Hint} from "./hint.model";
 import { JsonPipe } from '@angular/common';
-
 @Component({
     selector: 'app-guess-list',
     standalone: true,
     imports: [JsonPipe],
     template: `
         <div class="flex flex-col text-3xl items-center">
-            @for (g of splitWords().show; track g) {
+            @for (g of currentSplit(); track g) {
                 @if (highlight($first, $last)) {
                     <h2>
                         <a class="underline text-emerald-700 decoration-emerald-400">{{ hints().letters }}</a>{{ g.substring(hints().index) }}
@@ -24,11 +23,11 @@ import { JsonPipe } from '@angular/common';
     `
 })
 export class GuessListComponent {
-    guesses = input.required<string[]>();
+    guesses = model.required<string[]>();
     position = input.required<'first' | 'last'>();
     hints = input.required<Hint>()
-    splitWords = computed<{collapsed: string[], show: string[]}>(() => this.divide(this.guesses()))
-    private readonly LIMIT = 4;
+    splitWords = computed(() => this.divide(this.guesses()))
+    private readonly LIMIT = 5;
 
     highlight(first: boolean, last: boolean) {
         switch (this.position()) {
@@ -38,6 +37,11 @@ export class GuessListComponent {
                 return last
         }
     }
+
+    guessesChange(guesses: string[]) {
+        this.guesses.set(guesses)
+    }
+
 
     shouldShow(index: number, first: boolean, last:boolean): boolean {
         switch(this.position()) {
@@ -52,7 +56,7 @@ export class GuessListComponent {
         return [guesses.slice(0, index), guesses.slice(index)]
     }
 
-    divide(guesses: string[]) {
+    divide(guesses: string[]): {collapsed: string[], show: string[]} {
         const index = this.position() == 'first' ? this.LIMIT : guesses.length - this.LIMIT
         const x = this.splitAt(index, guesses)
         switch(this.position()) {
@@ -63,4 +67,7 @@ export class GuessListComponent {
         }
     }
 
+    currentSplit() {
+        return this.splitWords().show
+    }
 }

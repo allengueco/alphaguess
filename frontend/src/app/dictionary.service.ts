@@ -1,7 +1,6 @@
 import {inject, Injectable, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Trie} from "@kamilmielnik/trie";
-import { firstValueFrom } from "rxjs";
 
 @Injectable({providedIn: "root"})
 export class DictionaryService {

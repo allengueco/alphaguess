@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal, Signal,} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, model, signal, Signal,} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterOutlet} from '@angular/router';
 import {BetaGuessService} from "./beta-guess.service";
@@ -16,21 +16,19 @@ import { GuessValidatorDirective } from './guess-validator.directive';
 })
 export class AppComponent {
     betaGuessService = inject(BetaGuessService);
-    summary: Signal<GameSessionSummary> = this.betaGuessService.summary
-    before: Signal<string[]> = computed(() => this.summary().guesses.before)
-    after: Signal<string[]> = computed(() => this.summary().guesses.after)
-    hints: Signal<Hint> = computed(() => this.updateWordHints(this.summary()))
+    summary = this.betaGuessService.summary
+    hints = computed(() => this.updateWordHints(this.summary()))
 
     guess = signal<string>('')
     sanitizedGuess = computed(() => this.sanitized(this.guess()))
-    
+
     onSubmit(guessForm: NgForm) {
         if (!guessForm.form.controls['guess'].errors) {
             this.betaGuessService.addGuess(this.sanitizedGuess())
         }
-        this.guess.set('')
-    }
 
+        this.guess.set("")
+    }
 
     giveUp() {
         this.betaGuessService.giveUp()
@@ -56,8 +54,8 @@ export class AppComponent {
         }
         return {letters, index}
     }
-    
+
     private sanitized(guess: string) {
-        return guess.toLowerCase()
+        return guess.trim().toLowerCase()
     }
 }
