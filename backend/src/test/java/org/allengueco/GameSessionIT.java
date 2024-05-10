@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @ImportTestcontainers(Containers.class)
 public class GameSessionIT {
     private static final Logger log = LoggerFactory.getLogger(GameSessionIT.class);
