@@ -36,7 +36,9 @@ export class WordService {
 
 
     randomWord() {
-        return this.validWords[Math.floor(Math.random() * this.validWords.length)]
+        const w = this.validWords[Math.floor(Math.random() * this.validWords.length)]
+        console.log(w)
+        return w
     }
 
     /**

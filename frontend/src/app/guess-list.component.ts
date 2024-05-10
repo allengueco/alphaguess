@@ -1,13 +1,14 @@
 import {ChangeDetectionStrategy, Component, computed, effect, input, model} from '@angular/core';
 import {Hint} from "./hint.model";
 import { JsonPipe } from '@angular/common';
+import { GuessLimitDirective } from './guess-limit.directive';
 @Component({
     selector: 'app-guess-list',
     standalone: true,
-    imports: [JsonPipe],
+    imports: [JsonPipe, GuessLimitDirective],
     template: `
-        <div class="flex flex-col text-3xl items-center">
-            @for (g of currentSplit(); track g) {
+        <div class="flex flex-col text-3xl items-center" appGuessLimit [position]="position()">
+            @for (g of guesses(); track g) {
                 @if (highlight($first, $last)) {
                     <h2>
                         <a class="underline text-emerald-700 decoration-emerald-400">{{ hints().letters }}</a>{{ g.substring(hints().index) }}
