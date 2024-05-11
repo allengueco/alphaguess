@@ -10,11 +10,11 @@ import { GuessLimitDirective } from './guess-limit.directive';
         <div class="flex flex-col text-3xl items-center" appGuessLimit [position]="position()">
             @for (g of guesses(); track g) {
                 @if (highlight($first, $last)) {
-                    <h2>
+                    <h2 #guess>
                         <a class="underline text-emerald-700 decoration-emerald-400">{{ hints().letters }}</a>{{ g.substring(hints().index) }}
                     </h2>
                 } @else {
-                    <h2>{{ g }}</h2>
+                    <h2 #guess>{{ g }}</h2>
                 }
             }
             @empty {
@@ -38,11 +38,6 @@ export class GuessListComponent {
                 return last
         }
     }
-
-    guessesChange(guesses: string[]) {
-        this.guesses.set(guesses)
-    }
-
 
     shouldShow(index: number, first: boolean, last:boolean): boolean {
         switch(this.position()) {
