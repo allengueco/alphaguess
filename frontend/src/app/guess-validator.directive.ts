@@ -25,7 +25,7 @@ export class GuessValidatorDirective implements Validator {
 
   validate(control: FormControl<string>): ValidationErrors | null {
     if (!control.value) return null;
-    const guess = control.value;
+    const guess = control.value.toLowerCase();
     if (
       this.summary().guesses.after.includes(guess) ||
       this.summary().guesses.before.includes(guess)
