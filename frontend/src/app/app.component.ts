@@ -35,7 +35,7 @@ export class AppComponent {
     }
 
     giveUp(guessForm: NgForm) {
-        this.betaGuessService.reset();
+        this.betaGuessService.reset(guessForm);
         guessForm.reset();
     }
 

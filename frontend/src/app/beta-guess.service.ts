@@ -2,6 +2,7 @@ import { Injectable, Signal, computed, inject, signal } from "@angular/core";
 import { GameSessionSummary } from "./guess-session-summary.model";
 import { WordService } from "./word.service";
 import { SessionService } from "./session.service";
+import { NgForm } from "@angular/forms";
 
 @Injectable({
     providedIn: 'root'
@@ -55,8 +56,9 @@ export class BetaGuessService {
         }
         this.sessionService.update(this.state());
     }
-    reset() {
+    reset(guessForm: NgForm) {
         this.sessionService.reset()
+        guessForm.reset();
     }
 }
 
