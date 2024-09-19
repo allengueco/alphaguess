@@ -1,73 +1,27 @@
-# betaguess (WIP)
+# Ui
 
-A simple [alphaguess](https://alphaguess.com) clone built using Spring, Angular, and Redis.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.3.
 
-## Requirements
+## Development server
 
-- Maven
-- Docker
-- Java (21+)
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Setup
+## Code scaffolding
 
-Assuming there is a running Docker Engine in your machine, run the application locally using this command:
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-```shell
-mvn spring-boot:test-run -pl backend
-```
+## Build
 
-This starts up the Spring Boot Application with a configured local development environment, which bootstraps a Redis
-container through Docker.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Usage
+## Running unit tests
 
-Submit your guesses using a `POST` request:
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-```shell
-curl -i \
- -H 'Content-Type: application/json' \
- -d '{"guess": "bark"}' \
- http://localhost:8080/api/submit
-```
+## Running end-to-end tests
 
-If the guess is valid, then the server will reply back with a `SESSION` cookie in the `Set-Cookie` header:
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-```
-HTTP/1.1 200
-Set-Cookie: SESSION=<SESSION_COOKIE>; Max-Age=3600; Expires=Thu, 28 Mar 2024 22:08:57 GMT; Path=/api; HttpOnly; SameSite=Lax
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Thu, 28 Mar 2024 21:08:57 GMT
+## Further help
 
-{"guesses":{"before":[],"after":["bark"]},"error":null,"lastSubmissionTimestamp":"2024-03-28T21:08:57.295570700Z","isGameOver":false}
-```
-
-Any subsequent guesses must contain the `SESSION` cookie.
-
-```shell
-curl -i \
- -H 'Content-Type: application/json' \
- -d '{"guess": "example"}' \
- -b 'SESSION=<SESSION_COOKIE>' \
- http://localhost:8080/api/submit
-```
-
-Response:
-
-```
-HTTP/1.1 200
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Thu, 28 Mar 2024 21:15:47 GMT
-
-{"guesses":{"before":[],"after":["bark","example"]},"error":null,"lastSubmissionTimestamp":"2024-03-28T21:15:47.672291100Z","isGameOver":false}
-```
-
-## API Reference
-
-#### Submit Guess
-
-```http request
-POST /api/submit
-```
-
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
