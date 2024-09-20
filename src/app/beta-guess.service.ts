@@ -3,21 +3,26 @@ import { GameSessionSummary } from "./guess-session-summary.model";
 import { WordService } from "./word.service";
 import { SessionService } from "./session.service";
 import { NgForm } from "@angular/forms";
+import { fromStorage } from "./from-storage.function";
+import { Hint } from "./hint.model";
+import { StorageService } from "./storage.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class BetaGuessService {
-    sessionService = inject(SessionService);
-    state = signal(this.sessionService.currentGameOrDefault());
-    wordService = inject(WordService);
+    readonly storageService = inject(StorageService)
+    readonly state = fromStorage<GameSessionSummary>('session')
+
+    wordService = inject(WordService)
+
     hints = computed(() => this.updateHints(this.state()))
-    before = computed(() => this.state()['guesses']['before'])
-    after = computed(() => this.state()['guesses']['after'])
-    startTime = computed(() => new Date(this.state().startTime || Date.now()))
-    chosenWord = computed(() => this.wordService.wordOfTheDay(this.startTime()))
-    updateHints(state: GameSessionSummary) {
-        const afterLength = state.guesses.after.length;
+    before = computed(() => this.state()?.guesses?.before)
+    after = computed(() => this.state()?.guesses?.after)
+
+    updateHints(state: GameSessionSummary | null): Hint | null {
+        if (state === null) return null;
+        const afterLength = state.guesses.after.length
         const top = state.guesses.after[afterLength - 1] ?? '';
         const bottom = state.guesses.before[0] ?? '';
 
@@ -38,26 +43,26 @@ export class BetaGuessService {
     }
 
     addGuess(guess: string) {
-        const pos = this.wordService.compare(this.chosenWord(), guess);
+        const pos = this.wordService.compare(guess);
         switch (pos) {
             case 'before':
             case 'after':
                 this.state.update(s => {
-                    const items = s.guesses[pos];
+                    const items = s?.guesses[pos] ?? [];
                     items.push(guess);
                     items.sort();
-                    const guesses = { ...s.guesses };
-                    const startTime = (s.startTime ||= new Date().toString());
-                    return { ...s, guesses, startTime };
+                    const guesses = { ...s?.guesses } ?? { guesses: { before: [], after: [] } };
+                    const startTime = s?.startTime ?? new Date().toString();
+                    return { isGameOver: true, guesses, startTime };
                 });
                 break;
             case 'equal':
                 this.state.update(s => ({ ...s, isGameOver: true }));
         }
-        this.sessionService.update(this.state());
     }
+
     reset(guessForm: NgForm) {
-        this.sessionService.reset()
+        this.storageService.setItem('session', null)
         guessForm.reset();
     }
 }
