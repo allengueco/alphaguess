@@ -1,4 +1,10 @@
-import { Component, computed, input, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  model,
+} from '@angular/core';
 import { Hint } from './hint.model';
 import { JsonPipe } from '@angular/common';
 import { GuessLimitDirective } from './guess-limit.directive';
@@ -6,6 +12,7 @@ import { GuessLimitDirective } from './guess-limit.directive';
   selector: 'app-guess-list',
   standalone: true,
   imports: [JsonPipe, GuessLimitDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
       class="flex flex-col text-3xl items-center"
@@ -47,7 +54,7 @@ export class GuessListComponent {
   shouldShow(index: number): boolean {
     switch (this.position()) {
       case 'first':
-        return index < 4;
+        return index < this.LIMIT - 1;
       case 'last':
         return index >= this.guesses().length - this.LIMIT;
     }
