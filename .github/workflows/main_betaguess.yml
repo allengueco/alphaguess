@@ -45,7 +45,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Deploy to GitHug Pages
+      - name: Deploy to GitHup Pages
         id: deployment
         uses: actions/deploy-pages@v4
 
