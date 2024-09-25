@@ -39,7 +39,6 @@ export class AppComponent {
   sanitizedGuess = computed(() => this.sanitized(this.guess()));
 
   onSubmit(guessForm: NgForm) {
-    console.log(guessForm.value)
     if (guessForm.valid) {
       this.betaGuessService.submitGuess(this.sanitizedGuess());
     }

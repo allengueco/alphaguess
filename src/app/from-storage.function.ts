@@ -1,5 +1,4 @@
 import {
-    CreateSignalOptions,
   DestroyRef,
   effect,
   inject,
@@ -13,13 +12,13 @@ import { isEqual } from 'lodash';
 
 export const fromStorage = <TValue>(
   storageKey: string,
-  opts?: CreateSignalOptions<TValue | null>
-): WritableSignal<TValue | null> => {
+  defaultIfNull: Required<TValue>
+): WritableSignal<TValue> => {
   const storage = inject(StorageService);
 
-  const initialValue = storage.getItem<TValue>(storageKey);
+  const initialValue = storage.getItem<TValue>(storageKey) ?? defaultIfNull;
 
-  const fromStorageSignal = signal<TValue | null>(initialValue, opts);
+  const fromStorageSignal = signal<TValue>(initialValue);
 
   const writeToStorageOnUpdateEffect = effect(() => {
     const updated = fromStorageSignal();
@@ -33,7 +32,7 @@ export const fromStorage = <TValue>(
     }
 
     const currentValue = fromStorageSignal();
-    const newValue = storage.getItem<TValue>(storageKey);
+    const newValue = storage.getItem<TValue>(storageKey) ?? defaultIfNull;
 
     const hasValueChanged = !isEqual(newValue, currentValue);
     if (hasValueChanged) {
