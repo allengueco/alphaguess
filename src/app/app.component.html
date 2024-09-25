@@ -6,17 +6,7 @@
     alphabetically.
   </h2>
   <h1 class="text-4xl">After:</h1>
-  <div class="flex flex-col text-3xl items-center" appGuessLimit>
-    @for (g of after(); track g) {
-      @if ($last) {
-        <app-word-highlight [guess]="g" [hints]="hints()"></app-word-highlight>
-      } @else {
-        <h2>{{ g }}</h2>
-      }
-    } @empty {
-      <h2>...</h2>
-    }
-  </div>
+  <app-guess-list [guesses]="after()" position='last' [hints]="hints()"></app-guess-list>
   <form
     (ngSubmit)="onSubmit(guessForm)"
     #guessForm="ngForm"
@@ -24,12 +14,13 @@
     class="flex flex-row space-x-4">
     <input
       autocomplete="off"
-      #guessControl="ngModel"
       class="shadow appearance-none border rounded p-2 text-gray-700 leading-tight focus:outline-none placeholder:tracking-wide placeholder:italic focus:shadow-outline"
       placeholder="Guess..."
       pattern="\w+"
+      #guessControl="ngModel"
       [(ngModel)]="guess"
       name="guess"
+      [appGuessValidator]="summary()"
       id="guess" />
     <button
       class="shadow bg-orange-500 hover:bg-orange-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-3 rounded"
@@ -60,21 +51,6 @@
   @if (summary().isGameOver) {
     <h1 class="text-7xl m-4">You guessed it!</h1>
   }
-  <div class="flex flex-col text-3xl items-center" appGuessLimit>
-    @for (g of before(); track g) {
-      @if ($first) {
-        <h2>
-          <a class="underline text-emerald-700 decoration-emerald-400">{{
-            hints().letters
-          }}</a
-          >{{ g.substring(hints().index) }}
-        </h2>
-      } @else {
-        <h2>{{ g }}</h2>
-      }
-    } @empty {
-      <h2>...</h2>
-    }
-  </div>
+  <app-guess-list [guesses]="before()" position='first' [hints]="hints()"></app-guess-list>
   <h1 class="text-4xl">Before:</h1>
 </div>

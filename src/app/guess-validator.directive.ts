@@ -21,7 +21,7 @@ import { GameSessionSummary } from './guess-session-summary.model';
 })
 export class GuessValidatorDirective implements Validator {
   dictionaryService = inject(DictionaryService);
-  summary = input.required<GameSessionSummary>({ alias: 'guessValidator' });
+  summary = input.required<GameSessionSummary>({ alias: 'appGuessValidator'});
 
   validate(control: FormControl<string>): ValidationErrors | null {
     if (!control.value) return null;

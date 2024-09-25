@@ -8,10 +8,11 @@ import {
 import { Hint } from './hint.model';
 import { JsonPipe } from '@angular/common';
 import { GuessLimitDirective } from './guess-limit.directive';
+import { WordHighlightComponent } from "./word-highlight.component";
 @Component({
   selector: 'app-guess-list',
   standalone: true,
-  imports: [JsonPipe, GuessLimitDirective],
+  imports: [JsonPipe, GuessLimitDirective, WordHighlightComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -20,14 +21,9 @@ import { GuessLimitDirective } from './guess-limit.directive';
       [position]="position()">
       @for (g of guesses(); track g) {
         @if (highlight($first, $last)) {
-          <h2 #guess>
-            <a class="underline text-emerald-700 decoration-emerald-400">{{
-              hints().letters
-            }}</a
-            >{{ g.substring(hints().index) }}
-          </h2>
+            <app-word-highlight [guess]="g" [hints]="hints()"></app-word-highlight>
         } @else {
-          <h2 #guess>{{ g }}</h2>
+          <h2>{{ g }}</h2>
         }
       } @empty {
         <h2>...</h2>

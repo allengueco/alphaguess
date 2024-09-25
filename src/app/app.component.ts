@@ -12,8 +12,6 @@ import { GuessListComponent } from './guess-list.component';
 import { GuessValidatorDirective } from './guess-validator.directive';
 import { BetaGuessService } from './beta-guess.service';
 import { WordHighlightComponent } from './word-highlight.component';
-import { fromStorage } from './from-storage.function';
-import { GameSessionSummary } from './guess-session-summary.model';
 
 @Component({
   selector: 'app-root',
@@ -39,7 +37,7 @@ export class AppComponent {
   sanitizedGuess = computed(() => this.sanitized(this.guess()));
 
   onSubmit(guessForm: NgForm) {
-    if (guessForm.valid) {
+    if (!guessForm.form.controls['guess'].errors) {
       this.betaGuessService.submitGuess(this.sanitizedGuess());
     }
     guessForm.reset();
